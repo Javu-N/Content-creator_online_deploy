@@ -1,0 +1,33 @@
+.hero-section  > div {
+    /* background: linear-gradient(#111425,#3751e0); */
+    background-attachment: fixed;
+    overflow: hidden;
+    z-index: 1;
+    position: relative;
+}
+
+.hero-section i {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: animate linear infinite;
+    z-index:0;
+    overflow: hidden;
+}
+
+@keyframes animate {
+    0%
+    {
+        opacity: 0;
+        transform: translateY(0);
+    }
+    10%,90%
+    {
+        opacity: 1;
+    }
+    100%
+    {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+}

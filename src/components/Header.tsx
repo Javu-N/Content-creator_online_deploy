@@ -17,14 +17,14 @@ const Header = () => {
     }
 
     return (
-        <section className='fixed w-full'>
+        <section className='fixed w-full z-20'>
             <nav className="bg-[var(--content-bg-color)] shadow-lg">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className='flex gap-10 items-center'>
                             <div className="flex-shrink-0 flex items-center gap-5">
                                 <Library className="text-[var(--foreground)]" />
-                                <a href="#" className="text-xl font-bold text-[var(--foreground)]">SHELFY</a>
+                                <a href="#" className="text-xl font-bold text-[var(--foreground)]">STORIVERSE</a>
                             </div>
 
                             {/* Menu Items */}

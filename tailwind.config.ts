@@ -14,6 +14,10 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+
+      backgroundImage: {
+        'night-sky': 'linear-gradient(to bottom, #0d1b2a, #1b263b, #415a77, #778da9)',
+      },
     },
   },
   plugins: [nextui()],
