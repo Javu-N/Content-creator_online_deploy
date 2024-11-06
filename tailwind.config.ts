@@ -13,10 +13,14 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        rainbow: "var(--rainbow)"
       },
 
       backgroundImage: {
-        'night-sky': 'linear-gradient(to bottom, #0d1b2a, #1b263b, #415a77, #778da9)',
+        'night-sky': 'linear-gradient(to top, black 0%, black 90%, transparent 100%)',
+        'night-sky-border': 'linear-gradient(to bottom, #415a77, #778da9)',
+        'rainbow': "var(--rainbow)",
+        'rainbow-hover': "var(--rainbow-hover)"
       },
     },
   },

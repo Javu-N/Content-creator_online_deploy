@@ -6,7 +6,7 @@ import "./hero-section.css";
 import { useEffect, useRef, } from "react";
 
 
-const Main = () => {
+export const HeroSection = () => {
     const sceneRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -69,18 +69,18 @@ const Main = () => {
                 <div className="container mx-auto px-6 md:px-12">
                     <div className="flex flex-col md:flex-row items-center">
                         <div className="md:w-1/2 lg:w-2/3">
-                            <h1 className="text-4xl md:text-6xl lg:text-7xl text-white font-bold mb-6">
+                            <h1 className="text-4xl md:text-6xl lg:text-7xl text-foreground font-bold mb-6">
                                 Welcome to <br className="hidden md:block" />
-                                <span className="text-indigo-500">StoriVerse</span>
+                                <span className="bg-rainbow text-transparent bg-clip-text">StoriVerse</span>
                             </h1>
-                            <p className="text-lg md:text-xl lg:text-2xl text-gray-400 mb-8">
+                            <p className="text-lg md:text-xl lg:text-2xl text-foreground mb-8">
                                 Create and immerse yourself in the world of amazing stories
                             </p>
                             <div className="flex gap-2">
-                                <a href="#" className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-md">
+                                <a href="#" className="bg-rainbow hover:bg-rainbow-hover text-foreground font-bold py-3 px-6 rounded-md">
                                     {`Let's read`}
                                 </a>
-                                <a href="#" className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-md">
+                                <a href="#" className="bg-gray-700 hover:bg-gray-600 text-foreground font-bold py-3 px-6 rounded-md">
                                     Create Yours
                                 </a>
                             </div>
@@ -96,4 +96,3 @@ const Main = () => {
     )
 }
 
-export default Main
