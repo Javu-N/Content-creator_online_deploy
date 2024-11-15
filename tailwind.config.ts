@@ -13,15 +13,21 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        rainbow: "var(--rainbow)"
+        rainbow: "var(--rainbow)",
+        bookCard: '#18181b'
       },
 
       backgroundImage: {
         'night-sky': 'linear-gradient(to top, black 0%, black 90%, transparent 100%)',
         'night-sky-border': 'linear-gradient(to bottom, #415a77, #778da9)',
         'rainbow': "var(--rainbow)",
-        'rainbow-hover': "var(--rainbow-hover)"
+        'rainbow-hover': "var(--rainbow-hover)",
+
       },
+
+      boxShadow: {
+        'bookCardShadow': '0 4px 6px rgba(255, 255, 255, 0.5)',
+      }
     },
   },
   plugins: [nextui()],

@@ -1,8 +1,8 @@
 'use client';
 
 import Image from "next/image"
-import heroImage from '../../public/heroImage.png'
-import "./hero-section.css";
+import heroImage from '$/public/heroImage.png';
+import "./css/hero-section.css";
 import { useEffect, useRef, } from "react";
 
 

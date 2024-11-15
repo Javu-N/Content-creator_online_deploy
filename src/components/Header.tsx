@@ -17,7 +17,7 @@ const Header = () => {
     }
 
     return (
-        <section className='fixed w-full z-20'>
+        <header className='fixed w-full z-20'>
             <nav className="bg-[var(--content-bg-color)] shadow-lg">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
@@ -137,7 +137,7 @@ const Header = () => {
                 </div>
 
             </nav>
-        </section>
+        </header>
     );
 };
 
