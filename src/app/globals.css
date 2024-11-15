@@ -10,6 +10,7 @@
   --content-bg-color:#171717;
   --rainbow: linear-gradient(70deg, rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153));
   --rainbow-hover: linear-gradient(70deg, rgb(59, 130, 246, 0.9), rgb(139, 92, 246, 0.9), rgb(236, 72, 153, 0.9));
+  --rainbow-shadow: 0 0 20px 0 rgba(139, 92, 246, 0.7);
 }
 
 /* dark theme disable */

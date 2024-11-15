@@ -14,7 +14,8 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         rainbow: "var(--rainbow)",
-        bookCard: '#18181b'
+        bookCard: '#18181b',
+        rainbowShadow: "var(--rainbow-shadow)"
       },
 
       backgroundImage: {
