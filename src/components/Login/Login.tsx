@@ -18,7 +18,7 @@ const Login = async () => {
     return (
         <main>
             <section className="min-h-screen flex items-center justify-center">
-                <div className="bg-bookCard flex rounded-2xl shadow-lg max-w-3xl p-5 items-center">
+                <div className="bg-card flex rounded-2xl shadow-lg max-w-3xl p-5 items-center">
 
                     <div className="md:w-1/2 px-8 md:px-16">
                         <h2 className="font-bold text-2xl text-foreground">Login</h2>
