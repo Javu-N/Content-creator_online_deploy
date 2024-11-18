@@ -35,7 +35,7 @@ export const BookSlide = ({ bookTitle }: BookSlideProps) => {
                 </p>
 
 
-                <a className="bg-rainbow hover:bg-rainbow-hover text-foreground font-bold py-3 px-6 rounded-md inline-block cursor-pointer">
+                <a className="bg-rainbow hover:scale-110 duration-300 text-foreground font-bold py-3 px-6 rounded-md inline-block cursor-pointer">
                     {`Let's read`}
                 </a>
 

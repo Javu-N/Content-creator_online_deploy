@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/',
-        destination: '/pages/home',
+        destination: '/pages/main/home',
         permanent: true, // Set to true if this is a permanent redirect
       },
     ];

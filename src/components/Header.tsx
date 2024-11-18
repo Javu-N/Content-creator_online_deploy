@@ -87,7 +87,7 @@ const Header = () => {
 
                         <div className={`hidden md:flex md:items-center md:space-x-4 text-[var(--foreground)] font-bold`}>
                             <a href="#" className="hover:text-blue-600 px-3 py-2 rounded-md text-sm">Sign Up</a>
-                            <div className="text-black bg-slate-100 hover:bg-gray-200 hover:bg-opacity-80 px-3 py-2 rounded-md text-sm cursor-pointer">Log in</div>
+                            <a href="/pages/auth" className="text-black bg-slate-100 hover:bg-gray-200 hover:bg-opacity-80 px-3 py-2 rounded-md text-sm cursor-pointer">Log in</a>
                         </div>
 
                         {/* Hamburger Menu (hidden on larger screens) */}
