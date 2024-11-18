@@ -1,12 +1,20 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, Library, Menu } from 'lucide-react';
+import { Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
 
 
 const Header = () => {
     const [isOpenMenu, setIsOpenMenu] = useState(false);
     const [isOpenExploreMenu, setIsExploreMenu] = useState(false);
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     const toggleMenu = () => {
         setIsOpenMenu(!isOpenMenu);
@@ -16,15 +24,24 @@ const Header = () => {
         setIsExploreMenu(!isOpenExploreMenu);
     }
 
+    const toggleSetTheme = () => {
+        if (theme == 'dark') {
+            setTheme('light')
+        }
+        else {
+            setTheme('dark')
+        }
+    }
+
     return (
         <header className='fixed w-full z-20'>
-            <nav className="bg-[var(--content-bg-color)] shadow-lg">
+            <nav className="bg-card">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className='flex gap-10 items-center'>
                             <div className="flex-shrink-0 flex items-center gap-5">
-                                <Library className="text-[var(--foreground)]" />
-                                <a href="#" className="text-xl font-bold text-[var(--foreground)]">STORIVERSE</a>
+                                <Library />
+                                <a href="#" className="text-xl font-bold">STORIVERSE</a>
                             </div>
 
                             {/* Menu Items */}
@@ -88,6 +105,9 @@ const Header = () => {
                         <div className={`hidden md:flex md:items-center md:space-x-4 text-[var(--foreground)] font-bold`}>
                             <a href="#" className="hover:text-blue-600 px-3 py-2 rounded-md text-sm">Sign Up</a>
                             <a href="/pages/auth" className="text-black bg-slate-100 hover:bg-gray-200 hover:bg-opacity-80 px-3 py-2 rounded-md text-sm cursor-pointer">Log in</a>
+                            {mounted && <button onClick={toggleSetTheme}>
+                                {theme == 'dark' ? <Moon /> : <Sun />}
+                            </button>}
                         </div>
 
                         {/* Hamburger Menu (hidden on larger screens) */}
@@ -133,7 +153,12 @@ const Header = () => {
                         </div>
 
                         <a href="#" className="block text-[var(--foreground)] hover:text-blue-600 px-3 py-2 rounded-md text-base ">Community</a>
+
+                        {mounted && <button className='px-3 py-2 rounded-md' onClick={toggleSetTheme}>
+                            {theme == 'dark' ? <Moon /> : <Sun />}
+                        </button>}
                     </div>
+
                 </div>
 
             </nav>

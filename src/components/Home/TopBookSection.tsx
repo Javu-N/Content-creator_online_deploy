@@ -14,7 +14,7 @@ type BookSlideProps = {
 
 export const BookSlide = ({ bookTitle }: BookSlideProps) => {
     return (
-        <div className='flex justify-center gap-[20px] bg-bookCard p-[20px] rounded-xl text-foreground'>
+        <div className='flex justify-center gap-[20px] bg-card p-[20px] rounded-xl text-foreground'>
             <div className='flex justify-center items-center my-auto w-[200px] rounded-xl'>
                 <Image src={sample_image} alt="Book Cover" className='rounded-xl' />
             </div>
