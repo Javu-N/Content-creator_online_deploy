@@ -33,6 +33,8 @@ const Header = () => {
         }
     }
 
+    const explore_url = "/pages/main/explore"
+
     return (
         <header className='fixed w-full z-20'>
             <nav className="bg-card">
@@ -46,7 +48,7 @@ const Header = () => {
 
                             {/* Menu Items */}
                             <div className={`hidden md:flex md:items-center md:space-x-4 text-[var(--foreground)] font-bold`}>
-                                <a href="#" className="hover:text-blue-600 px-3 py-2 rounded-md text-sm">Home</a>
+                                <a href="/" className="hover:text-blue-600 px-3 py-2 rounded-md text-sm">Home</a>
 
                                 <div className='relative'>
                                     <button onClick={toggleExploreMenu} className='flex gap-1 items-center hover:text-blue-600'>
@@ -58,19 +60,19 @@ const Header = () => {
                                         <ul className="absolute left-0 mt-2 bg-white shadow-lg rounded-md flex items-center">
                                             <ul className='w-48'>
                                                 <li>
-                                                    <a href="/service1" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Fantasy</a>
+                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Fantasy</a>
                                                 </li>
                                                 <li>
-                                                    <a href="/service2" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Science Fiction</a>
+                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Science Fiction</a>
                                                 </li>
                                                 <li>
-                                                    <a href="/service3" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Mystery</a>
+                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Mystery</a>
                                                 </li>
                                                 <li>
-                                                    <a href="/service3" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Romance</a>
+                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Romance</a>
                                                 </li>
                                                 <li>
-                                                    <a href="/service1" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Thriller</a>
+                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Thriller</a>
                                                 </li>
 
                                             </ul>
@@ -88,10 +90,13 @@ const Header = () => {
                                                     <a href="/service3" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Young Adult</a>
                                                 </li>
                                                 <li>
-                                                    <a href="/service3" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Non-fiction</a>
+                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Non-fiction</a>
                                                 </li>
                                                 <li>
-                                                    <a href="/service3" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Adventure</a>
+                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Adventure</a>
+                                                </li>
+                                                <li>
+                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">More</a>
                                                 </li>
                                             </ul>
                                         </ul>
@@ -126,7 +131,7 @@ const Header = () => {
                         } overflow-hidden`}
                 >
                     <div className={`px-2 pt-2 pb-3 space-y-1 font-bold`}>
-                        <a href="#" className="block text-[var(--foreground)] hover:text-blue-600 px-3 py-2 rounded-md text-base ">Home</a>
+                        <a href="/" className="block text-[var(--foreground)] hover:text-blue-600 px-3 py-2 rounded-md text-base ">Home</a>
 
                         {/* Explore button */}
                         <button onClick={toggleExploreMenu} className='flex gap-1 items-center text-[var(--foreground)] hover:text-blue-600'>
