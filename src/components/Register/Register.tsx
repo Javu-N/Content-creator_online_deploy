@@ -24,15 +24,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import { format } from "date-fns"
-import { Calendar } from "@/components/ui/calendar"
-import { CalendarIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 const FormSchema = z.object({
     first_name: z.string().min(2, {
@@ -60,6 +51,9 @@ const FormSchema = z.object({
     birthday: z.date({
         required_error: "A date of birth is required.",
     }),
+    day: z.string(),
+    month: z.string(),
+    year: z.string()
 }).refine((data) => data.password === data.re_password, {
     message: "Passwords must match.",
     path: ["re_password"], // Highlight the re_password field in case of an error
@@ -81,6 +75,9 @@ export default function Register() {
             re_password: "",
             gender: "",
             language: "",
+            day: "",
+            month: "",
+            year: ""
         },
     })
 
@@ -99,21 +96,21 @@ export default function Register() {
         <main>
             <section className='min-h-screen flex items-center justify-center'>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="bg-card rounded-2xl p-10 gap-3 flex flex-col">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="bg-card rounded-2xl p-5 md:p-10 gap-3 flex flex-col mx-[30px] sm:mx-0">
                         <div>
                             <h2 className='font-bold text-xl'>Create New Account</h2>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-3 w-full">
+                        <div className="flex gap-3 w-full">
                             {/* First name & last name */}
                             <FormField
                                 control={form.control}
                                 name="first_name"
                                 render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>First name</FormLabel>
+                                    <FormItem className="w-1/2">
+                                        <FormLabel className="hidden">First name</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Enter your first name" {...field} />
+                                            <Input placeholder="first name" {...field} />
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -123,10 +120,10 @@ export default function Register() {
                                 control={form.control}
                                 name="last_name"
                                 render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Second name</FormLabel>
+                                    <FormItem className="w-1/2">
+                                        <FormLabel className="hidden">Second name</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Enter your last name" {...field} />
+                                            <Input placeholder="last name" {...field} />
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -140,7 +137,7 @@ export default function Register() {
                                 name="gender"
                                 render={({ field }) => (
                                     <FormItem className="sm:w-1/2">
-                                        <FormLabel>Gender</FormLabel>
+                                        <FormLabel className="hidden">Gender</FormLabel>
                                         <FormControl>
                                             <Select>
                                                 <SelectTrigger>
@@ -166,7 +163,7 @@ export default function Register() {
                                 name="language"
                                 render={({ field }) => (
                                     <FormItem className="sm:w-1/2">
-                                        <FormLabel>Language</FormLabel>
+                                        <FormLabel className="hidden">Language</FormLabel>
                                         <FormControl>
                                             <Select>
                                                 <SelectTrigger>
@@ -192,53 +189,102 @@ export default function Register() {
                             />
                         </div>
 
-                        <FormField
-                            control={form.control}
-                            name="birthday"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-col w-full">
-                                    <FormLabel>Date of birth</FormLabel>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <FormControl>
-                                                <Button
-                                                    variant={"outline"}
-                                                    className={cn(
-                                                        "font-normal",
-                                                        !field.value && "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    {field.value ? (
-                                                        format(field.value, "PPP")
-                                                    ) : (
-                                                        <span>Pick a date</span>
-                                                    )}
-                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                </Button>
-                                            </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto" align="start">
-                                            <Calendar
-                                                mode="single"
-                                                selected={field.value}
-                                                onSelect={field.onChange}
-                                                disabled={(date) =>
-                                                    date > new Date() || date < new Date("1900-01-01")
-                                                }
-                                                initialFocus
-                                            />
-                                        </PopoverContent>
-                                    </Popover>
-                                </FormItem>
-                            )}
-                        />
+                        <div className="flex gap-3 w-full">
+                            <FormField
+
+                                control={form.control}
+                                name="gender"
+                                render={({ field }) => (
+                                    <FormItem className="w-1/3">
+                                        <FormLabel className="hidden">Month</FormLabel>
+                                        <FormControl>
+                                            <Select>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Month" {...field} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Month</SelectLabel>
+                                                        {Array.from({ length: 12 }, (_, i) => (
+                                                            <SelectItem key={i + 1} value={(i + 1).toString()}>
+                                                                {new Date(0, i).toLocaleString("default", { month: "short" })}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="gender"
+                                render={({ field }) => (
+                                    <FormItem className="w-1/3">
+                                        <FormLabel className="hidden">Day</FormLabel>
+                                        <FormControl>
+                                            <Select>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Day" {...field} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Day</SelectLabel>
+                                                        {Array.from({ length: 31 }, (_, i) => (
+                                                            <SelectItem key={i + 1} value={(i + 1).toString()}>
+                                                                {i + 1}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="gender"
+                                render={({ field }) => (
+                                    <FormItem className="w-1/3">
+                                        <FormLabel className="hidden">Year</FormLabel>
+                                        <FormControl>
+                                            <Select>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Year" {...field} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Year</SelectLabel>
+                                                        {Array.from({ length: 2050 - 1945 + 1 }, (_, i) => (
+                                                            <SelectItem key={1945 + i} value={(1945 + i).toString()}>
+                                                                {1945 + i}
+                                                            </SelectItem>
+                                                        ))}
+
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+
 
                         <FormField
                             control={form.control}
                             name="email"
                             render={({ field }) => (
                                 <FormItem className="w-full">
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel className="hidden">Email</FormLabel>
                                     <FormControl>
                                         <Input type="email" placeholder="Enter your email" {...field} />
                                     </FormControl>
@@ -251,29 +297,20 @@ export default function Register() {
                             name="password"
                             render={({ field }) => (
                                 <FormItem className="w-full">
-                                    <FormLabel>Password</FormLabel>
+                                    <FormLabel className="hidden">Password</FormLabel>
                                     <FormControl>
                                         <Input type="password" placeholder="Enter your password" {...field} />
                                     </FormControl>
                                 </FormItem>
                             )}
                         />
-
-                        <FormField
-                            control={form.control}
-                            name="re_password"
-                            render={({ field }) => (
-                                <FormItem className="w-full">
-                                    <FormLabel>Re-enter your Password</FormLabel>
-                                    <FormControl>
-                                        <Input type="password" placeholder="Re-enter your password" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-
-
-                        <Button type="submit">Submit</Button>
+                        <div className="max-w-[500px] mx-auto block text-xs">
+                            <p className="mb-5">People who use our service may have uploaded your contact information to StoriVerse. Learn more.</p>
+                            <p>By clicking Sign Up, you agree to our Terms, Privacy Policy and Cookies Policy. You may receive SMS notifications from us and can opt out at any time.</p>
+                        </div>
+                        <div className="flex flex-col m-auto w-1/2">
+                            <Button className="w-full hover:scale-110 duration-300" type="submit">Submit</Button>
+                        </div>
                     </form>
                 </Form>
             </section>
