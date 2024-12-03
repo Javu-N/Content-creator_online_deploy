@@ -3,13 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "@/components/ui/carousel"
+
 import Image from 'next/image';
 import {
     Select,
@@ -20,8 +14,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Bold } from "lucide-react";
-import { Toggle } from "@/components/ui/toggle"
 import sample_image from '$/public/sample-2.jpg';
 import sample_image_2 from '$/public/sample-5.jpg'
 import sample_image_3 from '$/public/sample-6.jpg'
@@ -29,22 +21,18 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { get_books } from '@/api/api'
+import { BookCarousel } from '@/components/Explore/BookCarousel';
 
 const genre = "Horror";
 
 
 const page = () => {
-    const get_top_books = () => {
-        const book_arr = get_books();
-        return book_arr.slice(0, 14);
-    }
 
     const get_all_books = () => {
         return get_books();
     }
 
-    const top_books = get_top_books();
-
+    const books_list = get_all_books();
 
     return (
         <div className=' w-full pt-[70px] block'>
@@ -53,31 +41,7 @@ const page = () => {
                 <span className='font-bold bg-rainbow text-transparent bg-clip-text text-2xl'>Top {genre} Stories</span>
             </div>
             {/* Carousel */}
-            <Carousel
-                opts={{
-                    align: "start",
-                    loop: true,
-                }}
-                className="w-full max-w-[300px] sm:max-w-[500px] md:max-w-[600px] lg:max-w-[800px] mx-auto mb-[20px] overflow-visible relative"
-
-            >
-                <CarouselContent>
-                    {top_books.map((book) => (
-                        <CarouselItem key={book.id} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6 overflow-visible">
-                            <a href='https://tailwindcss.com/docs/responsive-design' className="p-1">
-                                <Card className='hover:scale-110 duration-300'>
-                                    <CardContent className="items-center p-3 flex flex-col justify-center">
-                                        <img className="rounded-lg mb-2 h-[150px]" src={book.cover} alt="book cover" />
-                                        <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2">{book.genre[0]}</span>
-                                    </CardContent>
-                                </Card>
-                            </a>
-                        </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <CarouselPrevious className='absolute -left-1 sm:-left-4 md:-left-10' />
-                <CarouselNext className='absolute -right-1 sm:-right-4 md:-right-10' />
-            </Carousel>
+            <BookCarousel />
 
             {/* Search bar */}
             <div className="mx-auto max-w-[450px] md:max-w-[700px] flex flex-col md:flex-row py-auto gap-3 px-3 justify-center">
@@ -150,108 +114,29 @@ const page = () => {
             <Dialog>
                 <div className="grid gap-5 justify-center mt-6 
                 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 px-[20px] xl:px-[50px] 2xl:px-[100px]">
-                    <DialogTrigger className='text-left'>
-                        <Card className="flex pl-3">
-                            <div className='w-[500px] m-auto'>
-                                <Image src={sample_image} alt="book cover" className='object-contain' />
-                            </div>
-                            <div className='flex flex-col gap-0'>
-                                <CardHeader className='mb-0 pb-2'>
-                                    <CardTitle className="text-xl md:text-2xl">Book Title</CardTitle>
-                                    <CardDescription>by Author</CardDescription>
-                                </CardHeader>
-                                <CardContent className='py-0 text-sm'>
-                                    <p>"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, "</p>
-                                </CardContent>
-                                <CardFooter className='flex justify-start gap-1 mt-3'>
-                                    <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Horror</span>
-                                    <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Family</span>
-                                    <span className="hidden md:block text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Adventure</span>
-                                </CardFooter>
-                            </div>
-                        </Card>
-                    </DialogTrigger>
+                    {books_list.map((book) => (
+                        <DialogTrigger className='text-left' key={book.id}>
+                            <Card className="flex pl-3 h-min-[400px] items-center">
 
-                    <Card className="flex pl-3">
-                        <div className='w-[500px] m-auto'>
-                            <Image src={sample_image} alt="book cover" className='object-contain' />
-                        </div>
-                        <div className='flex flex-col gap-0'>
-                            <CardHeader className='mb-0 pb-2'>
-                                <CardTitle className="text-xl md:text-2xl">Book Title</CardTitle>
-                                <CardDescription>by Author</CardDescription>
-                            </CardHeader>
-                            <CardContent className='py-0 text-sm'>
-                                <p>"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, "</p>
-                            </CardContent>
-                            <CardFooter className='flex justify-start gap-1 mt-3'>
-                                <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Horror</span>
-                                <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Family</span>
-                                <span className="hidden md:block text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Adventure</span>
-                            </CardFooter>
-                        </div>
-                    </Card>
+                                <img src={book.cover} alt="book cover" className="w-1/2 h-[100px] object-contain" />
 
-                    <Card className="flex pl-3">
-                        <div className='w-[500px] m-auto'>
-                            <Image src={sample_image} alt="book cover" className='object-contain' />
-                        </div>
-                        <div className='flex flex-col gap-0'>
-                            <CardHeader className='mb-0 pb-2'>
-                                <CardTitle className="text-xl md:text-2xl">Book Title</CardTitle>
-                                <CardDescription>by Author</CardDescription>
-                            </CardHeader>
-                            <CardContent className='py-0 text-sm'>
-                                <p>"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, "</p>
-                            </CardContent>
-                            <CardFooter className='flex justify-start gap-1 mt-3'>
-                                <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Horror</span>
-                                <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Family</span>
-                                <span className="hidden md:block text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Adventure</span>
-                            </CardFooter>
-                        </div>
-                    </Card>
-
-                    <Card className="flex pl-3">
-                        <div className='w-[500px] m-auto'>
-                            <Image src={sample_image_2} alt="book cover" className='object-contain' />
-                        </div>
-                        <div className='flex flex-col gap-0'>
-                            <CardHeader className='mb-0 pb-2'>
-                                <CardTitle className="text-xl md:text-2xl">Book Title</CardTitle>
-                                <CardDescription>by Author</CardDescription>
-                            </CardHeader>
-                            <CardContent className='py-0 text-sm'>
-                                <p>"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, "</p>
-                            </CardContent>
-                            <CardFooter className='flex justify-start gap-1 mt-3'>
-                                <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Horror</span>
-                                <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Family</span>
-                                <span className="hidden md:block text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Adventure</span>
-                            </CardFooter>
-                        </div>
-                    </Card>
-
-                    <Card className="flex pl-3">
-                        <div className='w-[500px] m-auto'>
-                            <Image src={sample_image} alt="book cover" className='object-contain' />
-                        </div>
-                        <div className='flex flex-col gap-0'>
-                            <CardHeader className='mb-0 pb-2'>
-                                <CardTitle className="text-xl md:text-2xl">Book Title</CardTitle>
-                                <CardDescription>by Author</CardDescription>
-                            </CardHeader>
-                            <CardContent className='py-0 text-sm'>
-                                <p>"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, "</p>
-                            </CardContent>
-                            <CardFooter className='flex justify-start gap-1 mt-3'>
-                                <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Horror</span>
-                                <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Family</span>
-                                <span className="hidden md:block text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Adventure</span>
-                            </CardFooter>
-                        </div>
-                    </Card>
-
+                                <div className='flex flex-col gap-0'>
+                                    <CardHeader className='mb-0 pb-2'>
+                                        <CardTitle className="text-xl md:text-2xl">{book.title}</CardTitle>
+                                        <CardDescription>by Author</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className='py-0 text-sm'>
+                                        <p>"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, "</p>
+                                    </CardContent>
+                                    <CardFooter className='flex justify-start gap-1 mt-3'>
+                                        <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Horror</span>
+                                        <span className="text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Family</span>
+                                        <span className="hidden md:block text-sm bg-secondary-foreground rounded-sm text-background px-2 m-auto">Adventure</span>
+                                    </CardFooter>
+                                </div>
+                            </Card>
+                        </DialogTrigger>
+                    ))}
 
                 </div>
 
