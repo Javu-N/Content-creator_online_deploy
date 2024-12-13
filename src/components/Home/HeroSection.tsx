@@ -80,7 +80,7 @@ export const HeroSection = () => {
                                 <a href="#" className="bg-rainbow hover:scale-110 duration-300 text-foreground font-bold py-3 px-6 rounded-md">
                                     {`Let's read`}
                                 </a>
-                                <a href="#" className="bg-[#002D74] hover:scale-110 duration-300 text-foreground font-bold py-3 px-6 rounded-md">
+                                <a href="/pages/main/creation/123" className="bg-[#002D74] hover:scale-110 duration-300 text-foreground font-bold py-3 px-6 rounded-md">
                                     Create Yours
                                 </a>
                             </div>

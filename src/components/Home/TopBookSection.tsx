@@ -7,20 +7,31 @@ import { Pagination, EffectCoverflow } from 'swiper/modules';
 import sample_image from '$/public/BookCover/sample_cover.png';
 import Image from 'next/image';
 import './css/creation-section.css';
+import { get_books } from '@/api/api';
 
 type BookSlideProps = {
-    bookTitle: string;
+    book: {
+        id: Number,
+        title: String,
+        Author: String,
+        genre: Array<String>,
+        description: String,
+        cover: string,
+        view_rate: Number,
+        star_rate: Number,
+        number_of_chapters: Number
+    }
 };
 
-export const BookSlide = ({ bookTitle }: BookSlideProps) => {
+export const BookSlide = ({ book }: BookSlideProps) => {
     return (
         <div className='flex justify-center gap-[20px] bg-card p-[20px] rounded-xl text-foreground'>
             <div className='flex justify-center items-center my-auto w-[200px] rounded-xl'>
-                <Image src={sample_image} alt="Book Cover" className='rounded-xl' />
+                <img src={book.cover} alt="Book Cover" className='rounded-xl h-[200px] w-[150px]' />
             </div>
 
             <div className="block m-auto space-y-2 w-1/2 md:w-3/4">
-                <h1 className='font-bold text-xl md:text-2xl'>{bookTitle}</h1>
+                <h1 className='font-bold text-xl md:text-2xl'>{book.title}</h1>
                 <div className='md:flex gap-[5px] flex-wrap hidden'>
                     <span className='text-[15px] bg-foreground px-2 text-background rounded-[14px]'>Thriller</span>
                     <span className='text-[15px] bg-foreground px-2 text-background rounded-[14px]'>Mystery</span>
@@ -29,9 +40,9 @@ export const BookSlide = ({ bookTitle }: BookSlideProps) => {
                     <span className='text-[15px] bg-foreground px-2 text-background rounded-[14px]'>Adult</span>
                     <span className='text-[15px] bg-foreground px-2 text-background rounded-[14px]'>Religion</span>
                 </div>
-                <h2 className='font-semibold'>Donald Trump</h2>
+                <h2 className='font-semibold'>{book.Author}</h2>
                 <p>
-                    Donald Trump is a businessman, television personality, and the 45th president of the United States (2017-2021)
+                    {book.description}
                 </p>
 
 
@@ -47,7 +58,7 @@ export const BookSlide = ({ bookTitle }: BookSlideProps) => {
 }
 
 export const TopBookSection = () => {
-    const BookTitle = ['Book Title 1', 'Book Title 2', 'Book Title 3', 'Book Title 4', 'Book Title 5', 'Book Title 6', 'Book Title 7', 'Book Title 8'];
+    const books = get_books();
     return (
         <>
             <style>
@@ -118,9 +129,9 @@ export const TopBookSection = () => {
 
                     >
 
-                        {BookTitle.map((title, index) => (
+                        {books.slice(0, 7).map((book, index) => (
                             <SwiperSlide key={index}>
-                                <BookSlide bookTitle={title} />
+                                <BookSlide book={book} />
                             </SwiperSlide>
                         ))}
 

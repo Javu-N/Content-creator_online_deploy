@@ -23,6 +23,7 @@ const actor = {
 const tabs = [
     { label: "About", content: "Welcome to the Home tab!" },
     { label: "Works", content: "This is the About tab content." },
+    { label: "Membership", content: "Reach us at the Contact tab." },
     { label: "Read Lists", content: "Reach us at the Contact tab." },
 ];
 
@@ -72,7 +73,7 @@ export default function page() {
 
             {activeTab === 0 ? <About /> : ''}
             {activeTab === 1 ? <Works /> : ''}
-            {activeTab === 2 ? <ReadLists /> : ''}
+            {activeTab === 3 ? <ReadLists /> : ''}
 
 
         </div >

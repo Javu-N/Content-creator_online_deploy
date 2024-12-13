@@ -37,11 +37,11 @@ const About = () => {
 
             <div className="bg-card rounded-xl p-6 max-w-[600px] gap-3 flex flex-col text-small flex-1">
                 <div className='flex flex-col gap-3 text-justify'>
-                    <h1 className='font-bold text-2xl'>About the author</h1>
+                    <h1 className='font-bold text-2xl'>About the Constantine</h1>
                     <p className='border-t pt-2 border-white'>I am the author of the year. I write supernatural story. Sometimes good, sometimes bad, It is great to have you.</p>
                     <Image src={sample_image} alt="s" className='rounded-xl' />
                     <p className='border-b pb-4 border-white'>
-                        Jesus Christ is a central figure in Christianity, believed to be the Son of God and Savior of humanity. Born in Bethlehem, He taught love, forgiveness, and faith. His crucifixion and resurrection symbolize redemption and eternal life. Jesus' teachings continue to inspire billions worldwide, emphasizing compassion, humility, and spiritual devotion.
+                        Beneath the swirling galaxies and shadowy hues of the cosmos, Constantine weaves tales that pulse with mystery, depth, and boundless imagination. With a style as enigmatic as the stars themselves, Constantine invites readers into worlds where reality blurs, emotions soar, and every turn of the page reveals a universe waiting to be discovered.
                     </p>
                 </div>
                 <div className='mb-2'>

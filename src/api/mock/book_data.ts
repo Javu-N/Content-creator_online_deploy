@@ -313,3 +313,105 @@ export const PinkPoeWorks = [
     "cover": "https://images.penguinrandomhouse.com/cover/9780593568790"
   }
 ]
+
+export const Chapters =[
+  {
+    "id": 1,
+    "chapter_name": "The Beginning of the Journey"
+  },
+  {
+    "id": 2,
+    "chapter_name": "Secrets of the Hidden Valley"
+  },
+  {
+    "id": 3,
+    "chapter_name": "Whispers in the Dark"
+  },
+  {
+    "id": 4,
+    "chapter_name": "The Forgotten Artifact"
+  },
+  {
+    "id": 5,
+    "chapter_name": "Trials of the Brave"
+  },
+  {
+    "id": 6,
+    "chapter_name": "A Glimmer of Hope"
+  },
+  {
+    "id": 7,
+    "chapter_name": "The Betrayal"
+  },
+  {
+    "id": 8,
+    "chapter_name": "Storms of Change"
+  },
+  {
+    "id": 9,
+    "chapter_name": "The Final Stand"
+  },
+  {
+    "id": 10,
+    "chapter_name": "Epilogue: A New Dawn"
+  }
+]
+
+export const book = {
+  "book": {
+    "title": "Whispers of Eternity",
+    "author": "Lila Morrow",
+    "genre": "Fantasy",
+    "description": "In a world where dreams shape reality, a young dreamer must uncover the truth behind her recurring nightmares to save her people from an eternal slumber.",
+    "language": "English",
+    "published_date": "2024-03-15",
+    "pages": 432,
+    "publisher": "Aurora Publishing",
+    "isbn": "978-3-16-148410-0",
+    "rating": 4.8,
+    "reviews": [
+      {
+        "reviewer": "Emma Grace",
+        "comment": "A beautifully written story that captivates from the first page.",
+        "rating": 5
+      },
+      {
+        "reviewer": "Liam Carter",
+        "comment": "An imaginative tale, but a bit slow in the middle.",
+        "rating": 4
+      }
+    ],
+    "price": 14.99,
+    "currency": "USD",
+    "format": "Hardcover",
+    "available_formats": ["Hardcover", "Paperback", "eBook", "Audiobook"],
+    "content": [
+      {
+        "chapter_id": 1,
+        "chapter_title": "The Dreamer Awakes",
+        "chapter_content": "In the quiet town of Eldershade, a young dreamer named Aelin awakens from a vivid dream. It’s a dream unlike any she had experienced before, one that feels almost real. The colors, the sensations, and the whispers of an unknown voice still echo in her mind, guiding her through the fog of sleep. Aelin can barely recall the specifics of the dream, but the feeling lingers—like a message just out of reach. She feels a strange connection to the dream, a sense that it holds the key to something important, something bigger than herself. Despite the confusion, Aelin feels compelled to investigate its meaning. As she steps out of bed, the morning sun filters through her window, casting a warm glow on the room. But today, nothing seems ordinary. Her once peaceful village feels different, as if the world itself is holding its breath. Aelin has always been able to decipher her dreams, but this one is different. She decides to visit the local dream oracle, an elderly woman known for her wisdom. The oracle listens carefully to Aelin's description and then falls silent, her gaze distant as if lost in thought. 'The dreams you see are not just figments of your imagination,' the oracle says with a cryptic smile. 'They are the whispers of the eternal dreamscape. And soon, you will find yourself in the midst of it.'"
+      },
+      {
+        "chapter_id": 2,
+        "chapter_title": "The Hidden Realm",
+        "chapter_content": "Determined to understand her dream and its significance, Aelin ventures into the Forbidden Forest, a place that has long been shrouded in mystery. The trees here are ancient, their roots twisted and gnarled as if they hold secrets that have been buried for centuries. The air is thick with an unsettling silence, broken only by the rustle of leaves beneath her feet. Aelin’s heart races with anticipation and fear. She follows the path laid before her in her dream, which seems to appear before her as though guided by an unseen force. After hours of walking, she stumbles upon a clearing where the sunlight seems to bend unnaturally, casting strange shadows on the ground. In the center of the clearing stands a massive stone archway, covered in ancient runes that glow faintly in the dim light. This is the portal she has seen in her dream. Aelin’s breath catches in her throat as she steps closer to the archway. She feels an undeniable pull toward it, a magnetic force that seems to call her name. As her fingers brush against the cold stone, a surge of energy pulses through her, and the world around her begins to shift. The air grows thick with power, and for a moment, she feels like she’s standing between two worlds—one foot in reality and the other in a place beyond comprehension. With one final step, she crosses the threshold and enters the Hidden Realm."
+      },
+      {
+        "chapter_id": 3,
+        "chapter_title": "Echoes of the Past",
+        "chapter_content": "Aelin steps into a world unlike anything she’s ever known. The landscape before her is a haunting reflection of her own world—same trees, same sky, but everything is muted, as if stuck in a perpetual twilight. She can hear faint whispers in the wind, voices of the past, calling out to her. As she walks deeper into the realm, she encounters the spirits of those who had ventured here before her, lost souls who were unable to escape the dreamscape. These spirits are not the ethereal figures one might expect; they are solid, their faces twisted in despair. They approach Aelin, their eyes wide with warning. 'You must turn back, child,' one spirit says, her voice trembling. 'The dreamscape will consume you, just as it did to us.' Aelin listens intently, her heart heavy with the weight of their words. 'What is this place?' she asks, her voice barely a whisper. 'Why are you here?' The spirits explain that they too were dreamers, drawn into the dreamscape by the same force that calls to Aelin. They were once powerful individuals, leaders, scholars, and adventurers who sought the truth within the dream but became trapped when they tried to push too far. They tell Aelin that the key to escaping lies in confronting the Dreamweaver, an ancient being who controls the dreamscape and its inhabitants. But the Dreamweaver is not easily defeated, and many have tried and failed. The spirits warn Aelin that she must be cautious. If she is not careful, she too could fall into the same trap."
+      },
+      {
+        "chapter_id": 4,
+        "chapter_title": "The Dreamweaver’s Curse",
+        "chapter_content": "Aelin’s quest leads her deeper into the Hidden Realm, where the shadows grow darker and the air becomes thick with an oppressive weight. She knows that her only chance of breaking free from the dreamscape lies in confronting the Dreamweaver, a being that is both powerful and elusive. The spirits’ warnings echo in her mind, but Aelin is resolute. She cannot turn back now. As she navigates the dreamscape, she encounters strange and wondrous creatures—beasts that lurk in the shadows, beings that exist only in the twilight between dreams and reality. Some are friendly, offering her cryptic advice, while others are hostile, driven mad by the curse of the Dreamweaver. Eventually, Aelin reaches a vast, desolate plain, where she sees a figure standing alone in the distance. The figure is tall and imposing, cloaked in robes that shimmer like starlight. This is the Dreamweaver. Aelin approaches cautiously, but as she gets closer, the figure turns to face her. The Dreamweaver’s face is hidden beneath a veil, but Aelin can feel its gaze upon her, as if it can see into the very depths of her soul. 'You have come to challenge me, little dreamer?' the Dreamweaver’s voice booms, echoing across the plain. 'You are too late. The curse is already upon you, and you cannot escape.' Aelin stands her ground, refusing to be intimidated. 'I will break the curse,' she declares, her voice filled with determination. 'I will set the dreamers free.' The Dreamweaver smiles, but it is not a kind smile. 'We shall see, child,' it replies, its voice filled with an eerie finality."
+      },
+      {
+        "chapter_id": 5,
+        "chapter_title": "The Final Awakening",
+        "chapter_content": "The confrontation with the Dreamweaver reaches its peak as Aelin unleashes the full force of her powers, drawing upon the strength she’s gained from her journey. The dreamscape begins to tremble, the very fabric of reality bending under the pressure of their struggle. The Dreamweaver is formidable, but Aelin is fueled by the determination to save her people and break the curse that has plagued her world. As they battle, Aelin discovers that the Dreamweaver is not entirely evil; it is a prisoner of its own creation, bound by the same curse that traps the dreamers. The battle shifts, and Aelin begins to see beyond the Dreamweaver’s malevolent exterior. She reaches out to it, not with violence, but with compassion. She offers a chance for redemption, a way to free both herself and the Dreamweaver from the endless cycle of nightmares. The Dreamweaver hesitates, its form flickering like a fading star. Slowly, it lowers its hands and bows its head. 'Perhaps… there is another way,' it murmurs, its voice filled with sorrow. Aelin’s heart swells with hope as the curse begins to lift. The dreamscape collapses around them, returning to the natural world. Aelin awakens, no longer a mere dreamer but a hero who has freed her world from the grip of eternal sleep."
+      }
+    ]
+  }
+}
+

@@ -18,7 +18,7 @@ const ReadLists = () => {
                         <Dot />
                         <span>12 Stories</span>
                     </div>
-                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-3 gap-y-3'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-3 gap-y-3'>
                         {books.map((item) => (
                             <div className='flex flex-col items-center w-[200px] bg-gray-500 py-2 px-2' key={item.title}>
                                 <img src={item.cover} className='w-[130px] h-[200px]' />
@@ -44,18 +44,8 @@ const ReadLists = () => {
                                 </div>
                             </div>
                         ))}
-
-
-
-
-
-
-
-
                     </div>
                 </div>
-
-
             </div>
         </div>
     )
