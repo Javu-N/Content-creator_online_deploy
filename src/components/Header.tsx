@@ -1,174 +1,288 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { ChevronDown, ChevronUp, Library, Menu } from 'lucide-react';
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
+import React, { useEffect, useState } from "react";
+import { ChevronDown, ChevronUp, Library, Menu } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import Link from "next/link";
 
+const Header = ({ locale }: { locale: string }) => {
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const [isOpenExploreMenu, setIsExploreMenu] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-const Header = () => {
-    const [isOpenMenu, setIsOpenMenu] = useState(false);
-    const [isOpenExploreMenu, setIsExploreMenu] = useState(false);
-    const { theme, setTheme } = useTheme();
-    const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-    useEffect(() => {
-        setMounted(true)
-    }, [])
+  const toggleMenu = () => {
+    setIsOpenMenu(!isOpenMenu);
+  };
 
-    const toggleMenu = () => {
-        setIsOpenMenu(!isOpenMenu);
-    };
+  const toggleExploreMenu = () => {
+    setIsExploreMenu(!isOpenExploreMenu);
+  };
 
-    const toggleExploreMenu = () => {
-        setIsExploreMenu(!isOpenExploreMenu);
+  const toggleSetTheme = () => {
+    if (theme == "dark") {
+      setTheme("light");
+    } else {
+      setTheme("dark");
     }
+  };
 
-    const toggleSetTheme = () => {
-        if (theme == 'dark') {
-            setTheme('light')
-        }
-        else {
-            setTheme('dark')
-        }
-    }
+  const explore_url = "/pages/main/explore";
 
-    const explore_url = "/pages/main/explore"
+  return (
+    <header className="fixed w-full z-20">
+      <nav className="bg-card">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex gap-10 items-center">
+              <div className="flex-shrink-0 flex items-center gap-5">
+                <Library />
+                <Link href="/" className="text-xl font-bold">
+                  STORIVERSE
+                </Link>
+              </div>
 
-    return (
-        <header className='fixed w-full z-20'>
-            <nav className="bg-card">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className='flex gap-10 items-center'>
-                            <div className="flex-shrink-0 flex items-center gap-5">
-                                <Library />
-                                <a href="#" className="text-xl font-bold">STORIVERSE</a>
-                            </div>
-
-                            {/* Menu Items */}
-                            <div className={`hidden md:flex md:items-center md:space-x-4 text-[var(--foreground)] font-bold`}>
-                                <a href="/" className="hover:text-blue-600 px-3 py-2 rounded-md text-sm">Home</a>
-
-                                <div className='relative'>
-                                    <button onClick={toggleExploreMenu} className='flex gap-1 items-center hover:text-blue-600'>
-                                        <div className="pl-3 py-2 rounded-md text-sm">Explore</div>
-                                        {isOpenExploreMenu ? <ChevronUp /> : <ChevronDown />}
-                                    </button>
-
-                                    {isOpenExploreMenu && (
-                                        <ul className="absolute left-0 mt-2 bg-white shadow-lg rounded-md flex items-center">
-                                            <ul className='w-48'>
-                                                <li>
-                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Fantasy</a>
-                                                </li>
-                                                <li>
-                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Science Fiction</a>
-                                                </li>
-                                                <li>
-                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Mystery</a>
-                                                </li>
-                                                <li>
-                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Romance</a>
-                                                </li>
-                                                <li>
-                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Thriller</a>
-                                                </li>
-
-                                            </ul>
-
-                                            <hr className="w-px h-40 bg-gray-400" />
-
-                                            <ul className='w-48'>
-                                                <li>
-                                                    <a href="/service1" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Horror</a>
-                                                </li>
-                                                <li>
-                                                    <a href="/service2" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Historical Fiction</a>
-                                                </li>
-                                                <li>
-                                                    <a href="/service3" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Young Adult</a>
-                                                </li>
-                                                <li>
-                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Non-fiction</a>
-                                                </li>
-                                                <li>
-                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Adventure</a>
-                                                </li>
-                                                <li>
-                                                    <a href={explore_url} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">More</a>
-                                                </li>
-                                            </ul>
-                                        </ul>
-                                    )}
-                                </div>
-
-                                <a href="#" className="hover:text-blue-600 px-3 py-2 rounded-md text-sm">Community</a>
-                            </div>
-                        </div>
-
-                        <div className={`hidden md:flex md:items-center md:space-x-4 text-[var(--foreground)] font-bold`}>
-                            <a href="/pages/register" className="hover:text-blue-600 px-3 py-2 rounded-md text-sm">Sign Up</a>
-                            <a href="/pages/auth" className="text-black bg-slate-100 hover:bg-gray-200 hover:bg-opacity-80 px-3 py-2 rounded-md text-sm cursor-pointer">Log in</a>
-                            {mounted && <button onClick={toggleSetTheme}>
-                                {theme == 'dark' ? <Moon /> : <Sun />}
-                            </button>}
-                        </div>
-
-                        {/* Hamburger Menu (hidden on larger screens) */}
-                        <div className="flex items-center md:hidden">
-                            <button onClick={toggleMenu} className="text-[var(--foreground)] focus:outline-none">
-                                <Menu />
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-
-                {/* Mobile Menu with Transition */}
-                <div
-                    className={`md:hidden transition-all duration-300 ease-in-out ${isOpenMenu ? 'max-h-200 opacity-100' : 'max-h-0 opacity-0'
-                        } overflow-hidden`}
+              {/* Menu Items */}
+              <div
+                className={`hidden md:flex md:items-center md:space-x-4 text-[var(--foreground)] font-bold`}
+              >
+                <a
+                  href="/"
+                  className="hover:text-blue-600 px-3 py-2 rounded-md text-sm"
                 >
-                    <div className={`px-2 pt-2 pb-3 space-y-1 font-bold`}>
-                        <a href="/" className="block text-[var(--foreground)] hover:text-blue-600 px-3 py-2 rounded-md text-base ">Home</a>
+                  Home
+                </a>
 
-                        {/* Explore button */}
-                        <button onClick={toggleExploreMenu} className='flex gap-1 items-center text-[var(--foreground)] hover:text-blue-600'>
-                            <div className="block pl-3 py-2 rounded-md text-base ">Explore</div>
-                            {isOpenExploreMenu ? <ChevronUp /> : <ChevronDown />}
-                        </button>
+                <div className="relative">
+                  <button
+                    onClick={toggleExploreMenu}
+                    className="flex gap-1 items-center hover:text-blue-600"
+                  >
+                    <div className="pl-3 py-2 rounded-md text-sm">Explore</div>
+                    {isOpenExploreMenu ? <ChevronUp /> : <ChevronDown />}
+                  </button>
 
-                        {/* Explore Content: Only show on trigger */}
-                        <div className={`md:hidden transition-all duration-300 ease-in-out ${isOpenExploreMenu ? 'max-h-200 opacity-100' : 'max-h-0 opacity-0'
-                            } overflow-hidden`}>
+                  {isOpenExploreMenu && (
+                    <ul className="absolute left-0 mt-2 bg-white shadow-lg rounded-md flex items-center">
+                      <ul className="w-48">
+                        <li>
+                          <a
+                            href={explore_url}
+                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
+                          >
+                            Fantasy
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href={explore_url}
+                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
+                          >
+                            Science Fiction
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href={explore_url}
+                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
+                          >
+                            Mystery
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href={explore_url}
+                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
+                          >
+                            Romance
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href={explore_url}
+                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
+                          >
+                            Thriller
+                          </a>
+                        </li>
+                      </ul>
 
-                            <div className='flex-col text-[var(--foreground)] pl-6 font-medium'>
-                                <div className="block py-2 rounded-md text-base">Fantasy</div>
-                                <div className="block py-2 rounded-md text-base">Science Fiction</div>
-                                <div className="block py-2 rounded-md text-base">Mystery</div>
-                                <div className="block py-2 rounded-md text-base">Romance</div>
-                                <div className="block py-2 rounded-md text-base">Thriller</div>
-                                <div className="block py-2 rounded-md text-base">Horror</div>
-                                <div className="block py-2 rounded-md text-base">Historical Fiction</div>
-                                <div className="block py-2 rounded-md text-base">Young Adult (YA)</div>
-                                <div className="block py-2 rounded-md text-base">Non-fiction</div>
-                                <div className="block py-2 rounded-md text-base">Adventure</div>
-                            </div>
-                        </div>
+                      <hr className="w-px h-40 bg-gray-400" />
 
-                        <a href="#" className="block text-[var(--foreground)] hover:text-blue-600 px-3 py-2 rounded-md text-base ">Community</a>
-
-                        {mounted && <button className='px-3 py-2 rounded-md' onClick={toggleSetTheme}>
-                            {theme == 'dark' ? <Moon /> : <Sun />}
-                        </button>}
-                    </div>
-
+                      <ul className="w-48">
+                        <li>
+                          <a
+                            href="/service1"
+                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
+                          >
+                            Horror
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href="/service2"
+                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
+                          >
+                            Historical Fiction
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href="/service3"
+                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
+                          >
+                            Young Adult
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href={explore_url}
+                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
+                          >
+                            Non-fiction
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href={explore_url}
+                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
+                          >
+                            Adventure
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href={explore_url}
+                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
+                          >
+                            More
+                          </a>
+                        </li>
+                      </ul>
+                    </ul>
+                  )}
                 </div>
 
-            </nav>
-        </header>
-    );
+                <a
+                  href="#"
+                  className="hover:text-blue-600 px-3 py-2 rounded-md text-sm"
+                >
+                  Community
+                </a>
+              </div>
+            </div>
+
+            <div
+              className={`hidden md:flex md:items-center md:space-x-4 text-[var(--foreground)] font-bold`}
+            >
+              <Link
+                href="/pages/register"
+                className="hover:text-blue-600 px-3 py-2 rounded-md text-sm"
+              >
+                Sign Up
+              </Link>
+              <Link
+                href={`/${locale}/auth/login`}
+                className="text-black bg-slate-100 hover:bg-gray-200 hover:bg-opacity-80 px-3 py-2 rounded-md text-sm cursor-pointer"
+              >
+                Log in
+              </Link>
+              {mounted && (
+                <button onClick={toggleSetTheme}>
+                  {theme == "dark" ? <Moon /> : <Sun />}
+                </button>
+              )}
+            </div>
+
+            {/* Hamburger Menu (hidden on larger screens) */}
+            <div className="flex items-center md:hidden">
+              <button
+                onClick={toggleMenu}
+                className="text-[var(--foreground)] focus:outline-none"
+              >
+                <Menu />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu with Transition */}
+        <div
+          className={`md:hidden transition-all duration-300 ease-in-out ${
+            isOpenMenu ? "max-h-200 opacity-100" : "max-h-0 opacity-0"
+          } overflow-hidden`}
+        >
+          <div className={`px-2 pt-2 pb-3 space-y-1 font-bold`}>
+            <a
+              href="/"
+              className="block text-[var(--foreground)] hover:text-blue-600 px-3 py-2 rounded-md text-base "
+            >
+              Home
+            </a>
+
+            {/* Explore button */}
+            <button
+              onClick={toggleExploreMenu}
+              className="flex gap-1 items-center text-[var(--foreground)] hover:text-blue-600"
+            >
+              <div className="block pl-3 py-2 rounded-md text-base ">
+                Explore
+              </div>
+              {isOpenExploreMenu ? <ChevronUp /> : <ChevronDown />}
+            </button>
+
+            {/* Explore Content: Only show on trigger */}
+            <div
+              className={`md:hidden transition-all duration-300 ease-in-out ${
+                isOpenExploreMenu
+                  ? "max-h-200 opacity-100"
+                  : "max-h-0 opacity-0"
+              } overflow-hidden`}
+            >
+              <div className="flex-col text-[var(--foreground)] pl-6 font-medium">
+                <div className="block py-2 rounded-md text-base">Fantasy</div>
+                <div className="block py-2 rounded-md text-base">
+                  Science Fiction
+                </div>
+                <div className="block py-2 rounded-md text-base">Mystery</div>
+                <div className="block py-2 rounded-md text-base">Romance</div>
+                <div className="block py-2 rounded-md text-base">Thriller</div>
+                <div className="block py-2 rounded-md text-base">Horror</div>
+                <div className="block py-2 rounded-md text-base">
+                  Historical Fiction
+                </div>
+                <div className="block py-2 rounded-md text-base">
+                  Young Adult (YA)
+                </div>
+                <div className="block py-2 rounded-md text-base">
+                  Non-fiction
+                </div>
+                <div className="block py-2 rounded-md text-base">Adventure</div>
+              </div>
+            </div>
+
+            <a
+              href="#"
+              className="block text-[var(--foreground)] hover:text-blue-600 px-3 py-2 rounded-md text-base "
+            >
+              Community
+            </a>
+
+            {mounted && (
+              <button className="px-3 py-2 rounded-md" onClick={toggleSetTheme}>
+                {theme == "dark" ? <Moon /> : <Sun />}
+              </button>
+            )}
+          </div>
+        </div>
+      </nav>
+    </header>
+  );
 };
 
 export { Header };

@@ -1,0 +1,13 @@
+{
+    "Login": {
+        "title": "Đăng Nhập",
+        "about": "Khám phá những câu chuyện tuyệt vời",
+        "email": "Email",
+        "password": "Mật khẩu",
+        "loginButton": "Đăng Nhập",
+        "loginButtonWithGoogle": "Đăng nhập với tài khoản Google",
+        "forGotPassword": "Bạn quên mật khẩu?",
+        "notHaveAccount": "Đăng ký tài khoản mới tại đây",
+        "registerButton": "Đăng ký"
+    }
+}
