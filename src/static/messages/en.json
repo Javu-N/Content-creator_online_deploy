@@ -1,0 +1,13 @@
+{
+    "Login": {
+        "title": "Login",
+        "about": "Explore the world of storytelling",
+        "email": "Email",
+        "password": "Password",
+        "loginButton": "Login",
+        "loginButtonWithGoogle": "Login with Google",
+        "forGotPassword": "Forgot your Password?",
+        "notHaveAccount": "Don't have an account?",
+        "registerButton": "Register"
+    }
+}
