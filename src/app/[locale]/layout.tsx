@@ -5,7 +5,6 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
-import { get } from "http";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 
@@ -32,7 +31,7 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as "en" | "vi")) {
     return notFound();
   }
 

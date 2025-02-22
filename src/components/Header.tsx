@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp, Library, Menu } from "lucide-react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 
-const Header = ({ locale }: { locale: string }) => {
+const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isOpenExploreMenu, setIsExploreMenu] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -51,12 +51,12 @@ const Header = ({ locale }: { locale: string }) => {
               <div
                 className={`hidden md:flex md:items-center md:space-x-4 text-[var(--foreground)] font-bold`}
               >
-                <a
+                <Link
                   href="/"
                   className="hover:text-blue-600 px-3 py-2 rounded-md text-sm"
                 >
                   Home
-                </a>
+                </Link>
 
                 <div className="relative">
                   <button
@@ -116,28 +116,28 @@ const Header = ({ locale }: { locale: string }) => {
 
                       <ul className="w-48">
                         <li>
-                          <a
+                          <Link
                             href="/service1"
                             className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
                           >
                             Horror
-                          </a>
+                          </Link>
                         </li>
                         <li>
-                          <a
+                          <Link
                             href="/service2"
                             className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
                           >
                             Historical Fiction
-                          </a>
+                          </Link>
                         </li>
                         <li>
-                          <a
+                          <Link
                             href="/service3"
                             className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
                           >
                             Young Adult
-                          </a>
+                          </Link>
                         </li>
                         <li>
                           <a
@@ -181,13 +181,13 @@ const Header = ({ locale }: { locale: string }) => {
               className={`hidden md:flex md:items-center md:space-x-4 text-[var(--foreground)] font-bold`}
             >
               <Link
-                href="/pages/register"
+                href="/register"
                 className="hover:text-blue-600 px-3 py-2 rounded-md text-sm"
               >
                 Sign Up
               </Link>
               <Link
-                href={`/${locale}/auth/login`}
+                href={`/auth/login`}
                 className="text-black bg-slate-100 hover:bg-gray-200 hover:bg-opacity-80 px-3 py-2 rounded-md text-sm cursor-pointer"
               >
                 Log in
@@ -218,12 +218,12 @@ const Header = ({ locale }: { locale: string }) => {
           } overflow-hidden`}
         >
           <div className={`px-2 pt-2 pb-3 space-y-1 font-bold`}>
-            <a
+            <Link
               href="/"
               className="block text-[var(--foreground)] hover:text-blue-600 px-3 py-2 rounded-md text-base "
             >
               Home
-            </a>
+            </Link>
 
             {/* Explore button */}
             <button
