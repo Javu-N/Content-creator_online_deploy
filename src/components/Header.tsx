@@ -1,283 +1,262 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, Library, Menu } from "lucide-react";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 import { Link } from "@/i18n/routing";
+import { Input } from "@/components/ui/input";
+import {
+  ChevronDown,
+  ChevronUp,
+  MenuIcon,
+  MoonIcon,
+  SearchIcon,
+  SunIcon,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
+
+const components: { title: string }[] = [
+  {
+    title: "Romance",
+  },
+  {
+    title: "Fantasy",
+  },
+  {
+    title: "Historical Fiction",
+  },
+  {
+    title: "Humor",
+  },
+  {
+    title: "Science Fiction",
+  },
+  {
+    title: "Non-Fiction",
+  },
+  {
+    title: "Mystery",
+  },
+  {
+    title: "Thriller",
+  },
+  {
+    title: "Horror",
+  },
+  {
+    title: "Adventure",
+  },
+  {
+    title: "Dystopian",
+  },
+  {
+    title: "Drama",
+  },
+  {
+    title: "Young Adult",
+  },
+  {
+    title: "Children's Fiction",
+  },
+  {
+    title: "Magical Realism",
+  },
+  {
+    title: "Steampunk",
+  },
+  {
+    title: "Cyberpunk",
+  },
+  {
+    title: "Gothic Fiction",
+  },
+  {
+    title: "Psychological Fiction",
+  },
+  {
+    title: "Literary Fiction",
+  },
+];
 
 const Header = () => {
-  const [isOpenMenu, setIsOpenMenu] = useState(false);
-  const [isOpenExploreMenu, setIsExploreMenu] = useState(false);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isExploreMenuOpen, setIsExploreMenuOpen] = useState(false);
+  const isLogin = false;
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const toggleMenu = () => {
-    setIsOpenMenu(!isOpenMenu);
-  };
-
-  const toggleExploreMenu = () => {
-    setIsExploreMenu(!isOpenExploreMenu);
-  };
-
-  const toggleSetTheme = () => {
-    if (theme == "dark") {
+  const handleThemeChange = () => {
+    if (theme === "dark") {
       setTheme("light");
     } else {
       setTheme("dark");
     }
   };
 
-  const explore_url = "/pages/main/explore";
+  const toggleExploreMenu = () => {
+    setIsExploreMenuOpen(!isExploreMenuOpen);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
-    <header className="fixed w-full z-20">
-      <nav className="bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex gap-10 items-center">
-              <div className="flex-shrink-0 flex items-center gap-5">
-                <Library />
-                <Link href="/" className="text-xl font-bold">
-                  STORIVERSE
-                </Link>
-              </div>
-
-              {/* Menu Items */}
-              <div
-                className={`hidden md:flex md:items-center md:space-x-4 text-[var(--foreground)] font-bold`}
-              >
-                <Link
-                  href="/"
-                  className="hover:text-blue-600 px-3 py-2 rounded-md text-sm"
-                >
-                  Home
-                </Link>
-
-                <div className="relative">
-                  <button
-                    onClick={toggleExploreMenu}
-                    className="flex gap-1 items-center hover:text-blue-600"
+    <header className="fixed w-full bg-card z-50">
+      <nav className="py-2 lg:py-3 px-2 lg:px-5">
+        <div className="flex justify-between items-center ">
+          <div className="flex">
+            <span className="font-bold text-[1.5rem] lg:text-[2rem]">
+              StoriVerse
+            </span>
+          </div>
+          <div className="hidden lg:flex gap-5">
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    href="/"
+                    className={`${navigationMenuTriggerStyle()}`}
                   >
-                    <div className="pl-3 py-2 rounded-md text-sm">Explore</div>
-                    {isOpenExploreMenu ? <ChevronUp /> : <ChevronDown />}
-                  </button>
-
-                  {isOpenExploreMenu && (
-                    <ul className="absolute left-0 mt-2 bg-white shadow-lg rounded-md flex items-center">
-                      <ul className="w-48">
-                        <li>
-                          <a
-                            href={explore_url}
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                          >
-                            Fantasy
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href={explore_url}
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                          >
-                            Science Fiction
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href={explore_url}
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                          >
-                            Mystery
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href={explore_url}
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                          >
-                            Romance
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href={explore_url}
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                          >
-                            Thriller
-                          </a>
-                        </li>
-                      </ul>
-
-                      <hr className="w-px h-40 bg-gray-400" />
-
-                      <ul className="w-48">
-                        <li>
-                          <Link
-                            href="/service1"
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                          >
-                            Horror
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            href="/service2"
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                          >
-                            Historical Fiction
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            href="/service3"
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                          >
-                            Young Adult
-                          </Link>
-                        </li>
-                        <li>
-                          <a
-                            href={explore_url}
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                          >
-                            Non-fiction
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href={explore_url}
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                          >
-                            Adventure
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href={explore_url}
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                          >
-                            More
-                          </a>
-                        </li>
-                      </ul>
+                    <span className="text-[1rem]">Home</span>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>
+                    <span className="text-[1rem]">Explore</span>
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-3 lg:w-[600px] ">
+                      {components.map((component) => (
+                        <Link
+                          key={component.title}
+                          href="/"
+                          className="text-[1rem] font-semibold hover:bg-accent py-1 px-2 rounded-sm"
+                        >
+                          {component.title}
+                        </Link>
+                      ))}
                     </ul>
-                  )}
-                </div>
-
-                <a
-                  href="#"
-                  className="hover:text-blue-600 px-3 py-2 rounded-md text-sm"
-                >
-                  Community
-                </a>
-              </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+            <div className="flex items-center gap-2">
+              <SearchIcon />
+              <Input
+                className="md:w-[200px] lg:w-[400px] xl:w-[600px] rounded-xl"
+                type="email"
+                placeholder="Email"
+              />
             </div>
-
-            <div
-              className={`hidden md:flex md:items-center md:space-x-4 text-[var(--foreground)] font-bold`}
-            >
-              <Link
-                href="/register"
-                className="hover:text-blue-600 px-3 py-2 rounded-md text-sm"
-              >
-                Sign Up
-              </Link>
-              <Link
-                href={`/auth/login`}
-                className="text-black bg-slate-100 hover:bg-gray-200 hover:bg-opacity-80 px-3 py-2 rounded-md text-sm cursor-pointer"
-              >
-                Log in
-              </Link>
-              {mounted && (
-                <button onClick={toggleSetTheme}>
-                  {theme == "dark" ? <Moon /> : <Sun />}
-                </button>
-              )}
+          </div>
+          <div className="flex gap-3 items-center">
+            <div className={cn("flex gap-2", isLogin ? "hidden" : "")}>
+              <Button>
+                <Link href="/auth/login">Login</Link>
+              </Button>
+              <Button>
+                <Link href="/register">Register</Link>
+              </Button>
             </div>
-
-            {/* Hamburger Menu (hidden on larger screens) */}
-            <div className="flex items-center md:hidden">
-              <button
-                onClick={toggleMenu}
-                className="text-[var(--foreground)] focus:outline-none"
-              >
-                <Menu />
+            {mounted && (
+              <button onClick={handleThemeChange}>
+                {theme === "dark" ? (
+                  <MoonIcon className="hover:cursor-pointer text-yellow-300 font-" />
+                ) : (
+                  <SunIcon className="hover:cursor-pointer text-red-500" />
+                )}
               </button>
+            )}
+            <div className={(cn("flex"), isLogin ? "" : "hidden")}>
+              <Avatar>
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt="@shadcn"
+                />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </div>
+            <div className=" lg:hidden">
+              <MenuIcon
+                className="hover:cursor-pointer"
+                onClick={toggleMobileMenu}
+              />
             </div>
           </div>
         </div>
 
-        {/* Mobile Menu with Transition */}
         <div
-          className={`md:hidden transition-all duration-300 ease-in-out ${
-            isOpenMenu ? "max-h-200 opacity-100" : "max-h-0 opacity-0"
+          className={`lg:hidden transition-all duration-300 ease-in-out ${
+            isMobileMenuOpen ? "max-h-200 opacity-100" : "max-h-0 opacity-0"
           } overflow-hidden`}
         >
           <div className={`px-2 pt-2 pb-3 space-y-1 font-bold`}>
-            <Link
-              href="/"
-              className="block text-[var(--foreground)] hover:text-blue-600 px-3 py-2 rounded-md text-base "
-            >
+            <Link href="/" className="hover:bg-accent px-3 py-2 rounded-xl">
               Home
             </Link>
+
+            <hr />
 
             {/* Explore button */}
             <button
               onClick={toggleExploreMenu}
-              className="flex gap-1 items-center text-[var(--foreground)] hover:text-blue-600"
+              className="flex gap-1 items-center text-[var(--foreground)] hover:bg-accent rounded-xl px-3 py-2"
             >
-              <div className="block pl-3 py-2 rounded-md text-base ">
-                Explore
-              </div>
-              {isOpenExploreMenu ? <ChevronUp /> : <ChevronDown />}
+              <div className="block ">Explore</div>
+              {isExploreMenuOpen ? <ChevronUp /> : <ChevronDown />}
             </button>
 
             {/* Explore Content: Only show on trigger */}
             <div
-              className={`md:hidden transition-all duration-300 ease-in-out ${
-                isOpenExploreMenu
+              className={`lg:hidden transition-all duration-300 ease-in-out ${
+                isExploreMenuOpen
                   ? "max-h-200 opacity-100"
                   : "max-h-0 opacity-0"
-              } overflow-hidden`}
+              } overflow-auto`}
             >
               <div className="flex-col text-[var(--foreground)] pl-6 font-medium">
-                <div className="block py-2 rounded-md text-base">Fantasy</div>
-                <div className="block py-2 rounded-md text-base">
-                  Science Fiction
-                </div>
-                <div className="block py-2 rounded-md text-base">Mystery</div>
-                <div className="block py-2 rounded-md text-base">Romance</div>
-                <div className="block py-2 rounded-md text-base">Thriller</div>
-                <div className="block py-2 rounded-md text-base">Horror</div>
-                <div className="block py-2 rounded-md text-base">
-                  Historical Fiction
-                </div>
-                <div className="block py-2 rounded-md text-base">
-                  Young Adult (YA)
-                </div>
-                <div className="block py-2 rounded-md text-base">
-                  Non-fiction
-                </div>
-                <div className="block py-2 rounded-md text-base">Adventure</div>
+                <Link
+                  href="/"
+                  className="block hover:bg-accent px-3 py-2 rounded-xl"
+                >
+                  More ...
+                </Link>
+                {components.slice(0, 5).map((component) => (
+                  <Link
+                    href="/"
+                    className="block hover:bg-accent px-3 py-2 rounded-xl"
+                    key={component.title}
+                  >
+                    {component.title}
+                  </Link>
+                ))}
               </div>
             </div>
+            <hr />
 
-            <a
-              href="#"
-              className="block text-[var(--foreground)] hover:text-blue-600 px-3 py-2 rounded-md text-base "
-            >
-              Community
-            </a>
-
-            {mounted && (
-              <button className="px-3 py-2 rounded-md" onClick={toggleSetTheme}>
-                {theme == "dark" ? <Moon /> : <Sun />}
-              </button>
-            )}
+            <div className="flex items-center gap-2 px-3 py-2">
+              <SearchIcon />
+              <Input
+                className=" rounded-xl w-full"
+                type="email"
+                placeholder="Email"
+              />
+            </div>
           </div>
         </div>
       </nav>
