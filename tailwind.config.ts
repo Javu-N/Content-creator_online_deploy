@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-import { nextui } from "@nextui-org/react";
 import tailwindcssAnimate from "tailwindcss-animate";
 
 const config: Config = {
@@ -74,6 +73,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [nextui(), tailwindcssAnimate],
+  plugins: [tailwindcssAnimate],
 };
 export default config;

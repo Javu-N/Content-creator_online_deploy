@@ -3,67 +3,67 @@
 import Image from "next/image";
 import heroImage from "$/public/heroImage.png";
 import "./css/hero-section.css";
-import { useEffect, useRef } from "react";
+// import { useEffect, useRef } from "react";
 import { Link } from "@/i18n/routing";
 
 export const HeroSection = () => {
-  const sceneRef = useRef<HTMLDivElement>(null);
+  // const sceneRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    function createStars() {
-      const scene = sceneRef.current;
+  // useEffect(() => {
+  //   function createStars() {
+  //     const scene = sceneRef.current;
 
-      if (!scene) return;
+  //     if (!scene) return;
 
-      // Remove existing stars before creating new ones
-      const existingStars = scene.querySelectorAll(".star"); // Use a class to select stars
-      existingStars.forEach((star) => star.remove());
+  //     // Remove existing stars before creating new ones
+  //     const existingStars = scene.querySelectorAll(".star"); // Use a class to select stars
+  //     existingStars.forEach((star) => star.remove());
 
-      const { offsetWidth: width, offsetHeight: height } = scene; // Get the dimensions of the hero-section
-      const count = width > 800 ? 200 : 100;
+  //     const { offsetWidth: width, offsetHeight: height } = scene; // Get the dimensions of the hero-section
+  //     const count = width > 800 ? 200 : 100;
 
-      for (let i = 0; i < count; i++) {
-        const star = document.createElement("i");
-        star.className = "star";
-        const x = Math.floor(Math.random() * width);
-        const y = Math.floor(Math.random() * height) + 100;
-        const duration = Math.random() * 10;
-        const size = Math.random() * 2;
+  //     for (let i = 0; i < count; i++) {
+  //       const star = document.createElement("i");
+  //       star.className = "star";
+  //       const x = Math.floor(Math.random() * width);
+  //       const y = Math.floor(Math.random() * height) + 100;
+  //       const duration = Math.random() * 10;
+  //       const size = Math.random() * 2;
 
-        star.style.left = `${x}px`;
-        star.style.top = `${y}px`;
-        star.style.width = `${1 + size}px`;
-        star.style.height = `${1 + size}px`;
+  //       star.style.left = `${x}px`;
+  //       star.style.top = `${y}px`;
+  //       star.style.width = `${1 + size}px`;
+  //       star.style.height = `${1 + size}px`;
 
-        star.style.animationDuration = `${5 + duration}s`;
-        star.style.animationDelay = `${duration}s`;
+  //       star.style.animationDuration = `${5 + duration}s`;
+  //       star.style.animationDelay = `${duration}s`;
 
-        scene.appendChild(star);
-      }
-    }
+  //       scene.appendChild(star);
+  //     }
+  //   }
 
-    createStars();
+  //   createStars();
 
-    // Handle resize event to recreate stars
-    const handleResize = () => {
-      createStars();
-    };
+  //   // Handle resize event to recreate stars
+  //   const handleResize = () => {
+  //     createStars();
+  //   };
 
-    // Add event listener for window resize
-    window.addEventListener("resize", handleResize);
+  //   // Add event listener for window resize
+  //   window.addEventListener("resize", handleResize);
 
-    // Cleanup event listener on unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  //   // Cleanup event listener on unmount
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
 
   return (
     // Hero Section
     <section className="bg-night-sky flex-col w-full">
       <div className="h-[100px] w-full"></div>
 
-      <div className="hero-section pb-20" ref={sceneRef}>
+      <div className="hero-section pb-20">
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 lg:w-2/3">
@@ -95,7 +95,7 @@ export const HeroSection = () => {
               <Image
                 src={heroImage}
                 alt="Hero Image"
-                className="bg-[var(--foreground)] rounded-full z-50"
+                className="bg-[var(--foreground)] rounded-full"
               />
             </div>
           </div>
