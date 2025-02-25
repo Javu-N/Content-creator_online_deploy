@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../../globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
@@ -54,7 +53,6 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             {children}
-            <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

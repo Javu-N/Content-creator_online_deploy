@@ -1,12 +1,14 @@
-import { HomeMain } from '@/components/Home/HomeMain'
-import React from 'react'
+import { HeroSection } from "@/components/Home/HeroSection";
+import { FeatureSection } from "@/components/Home/FeatureSection";
+import React from "react";
 
-const page = () => {
-    return (
-        <>
-            <HomeMain />
-        </>
-    )
-}
+const HomePage = () => {
+  return (
+    <>
+      <HeroSection />
+      <FeatureSection />
+    </>
+  );
+};
 
-export default page
+export default HomePage;

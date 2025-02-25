@@ -15,8 +15,11 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         rainbow: "var(--rainbow)",
+        blueRainbow: "var(--blue-rainbow)",
+        purpleRainbow: "var(--purple-rainbow)",
         bookCard: "#18181b",
         rainbowShadow: "var(--rainbow-shadow)",
+        rainbowForeground: "var(--rainbow-foreground)",
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",

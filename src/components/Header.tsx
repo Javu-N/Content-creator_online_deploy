@@ -120,7 +120,7 @@ const Header = () => {
       <nav className="py-2 lg:py-3 px-2 lg:px-5">
         <div className="flex justify-between items-center ">
           <div className="flex">
-            <span className="font-bold text-[1.5rem] lg:text-[2rem]">
+            <span className="bg-rainbow text-transparent bg-clip-text text-[1.5rem] font-bold">
               StoriVerse
             </span>
           </div>
@@ -215,7 +215,7 @@ const Header = () => {
             {/* Explore button */}
             <button
               onClick={toggleExploreMenu}
-              className="flex gap-1 items-center text-[var(--foreground)] hover:bg-accent rounded-xl px-3 py-2"
+              className="flex gap-1 items-center  hover:bg-accent rounded-xl px-3 py-2"
             >
               <div className="block ">Explore</div>
               {isExploreMenuOpen ? <ChevronUp /> : <ChevronDown />}
@@ -229,7 +229,7 @@ const Header = () => {
                   : "max-h-0 opacity-0"
               } overflow-auto`}
             >
-              <div className="flex-col text-[var(--foreground)] pl-6 font-medium">
+              <div className="flex-col  pl-6 font-medium">
                 <Link
                   href="/"
                   className="block hover:bg-accent px-3 py-2 rounded-xl"
