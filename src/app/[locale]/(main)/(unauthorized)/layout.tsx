@@ -1,6 +1,6 @@
-import { Header } from "@/components/Header";
+import { Header } from "@/components/Header/Header";
 
-const MainLayout = ({
+const UnauthorizedLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -13,4 +13,4 @@ const MainLayout = ({
   );
 };
 
-export default MainLayout;
+export default UnauthorizedLayout;
