@@ -1,55 +1,125 @@
+"use client";
+
 import Image from "next/image";
-import sample_image from "$/public/sample-3.jpg";
 import vn_sample_image from "$/public/sample-4.jpg";
-import { Eye } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Button } from "../ui/button";
+import { Link, useRouter } from "@/i18n/routing";
+import { Input } from "../ui/input";
+import { FormEvent, useEffect, useState } from "react";
+import { Logger } from "@/utils/Logger";
+
+import axios, { AxiosError } from "axios";
+import { useSearchParams } from "next/navigation";
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const searchParams = useSearchParams();
+  const [error, setError] = useState<boolean>(false);
+  const router = useRouter();
+  const t = useTranslations("Login");
+
+  useEffect(() => {
+    // Check if the 'error' query parameter is present in the URL
+    if (searchParams.get("error") === "true") {
+      setError(true);
+    }
+  }, [searchParams]);
+
   const randomQuote = {
     author: "Ho Chi Minh",
     quote: "Nothing is more important than independence and freedom",
-    length: 100,
   };
-  const t = useTranslations("Login");
+
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    try {
+      const response = await axios.post("/api/auth/login", {
+        email,
+        password,
+      });
+
+      if (response.status !== 200) {
+        const message = "login error";
+        Logger.error(message, "client");
+        router.push("/auth/login?error=true");
+      }
+
+      router.push("/");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        const message =
+          "Axios Error " + JSON.stringify(error.response?.data, null, 2);
+        Logger.error(message, "client");
+      } else if (error instanceof Error) {
+        const message = "General Error " + error.message;
+        Logger.error(message, "client");
+      } else {
+        const message = "Unknown Error " + error;
+        Logger.error(message, "client");
+      }
+      router.push("/auth/login?error=true");
+    }
+  };
 
   return (
-    <main>
+    <main className="bg-background">
       <section className="min-h-screen flex items-center justify-center">
-        <div className="bg-card flex rounded-2xl shadow-lg max-w-3xl p-5 items-center">
-          <div className="md:w-1/2 px-8 md:px-16">
+        <div className="bg-card flex rounded-2xl shadow-lg max-w-3xl p-5 items-center ">
+          <div className="md:w-1/2 px-5 md:px-16 space-y-4">
             <h2 className="font-bold text-2xl text-foreground">{t("title")}</h2>
-            <p className="text-xs mt-4 text-foreground">
-              If you are already a member, easily log in
+            <p className="text-sm mt-4 text-foreground italic font-serif">
+              {t("about")}
             </p>
 
-            <form action="" className="flex flex-col gap-4">
-              <input
-                className="p-2 mt-8 rounded-xl border"
+            <form onSubmit={handleLogin} className="flex flex-col gap-4">
+              <Input
+                className="p-2"
                 type="email"
                 name="email"
-                placeholder="Email"
+                placeholder={t("email")}
+                required
               />
               <div className="relative">
-                <input
-                  className="p-2 rounded-xl border w-full"
-                  type="password"
+                <Input
+                  className="p-2"
+                  type={showPassword ? "text" : "password"}
                   name="password"
-                  placeholder="Password"
+                  placeholder={t("password")}
+                  required
                 />
-                <Eye className="absolute top-1/2 right-3 -translate-y-1/2" />
+                <button
+                  type="button"
+                  className="absolute top-1/2 right-3 -translate-y-1/2"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <Eye className="text-red-500" />
+                  ) : (
+                    <EyeOff className="text-green-500" />
+                  )}
+                </button>
               </div>
-              <button className="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300">
-                Login
-              </button>
+              {error && (
+                <span className="text-sm text-red-500">{t("loginFailed")}</span>
+              )}
+              <Button>{t("loginButton")}</Button>
             </form>
 
             <div className="mt-6 grid grid-cols-3 items-center text-gray-400">
               <hr className="border-gray-400" />
-              <p className="text-center text-sm">OR</p>
+              <p className="text-center text-sm">{t("or")}</p>
               <hr className="border-gray-400" />
             </div>
 
-            <button className="bg-foreground border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-105 duration-300 text-[#002D74]">
+            <Button className="w-full mt-5 flex justify-center items-center">
               <svg
                 className="mr-3"
                 xmlns="http://www.w3.org/2000/svg"
@@ -73,47 +143,38 @@ const Login = () => {
                   d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
                 />
               </svg>
-              Login with Google
-            </button>
+              {t("loginButtonWithGoogle")}
+            </Button>
 
-            <div className="mt-5 text-xs border-b border-foreground py-4 text-foreground hover:text-gray-500">
-              <a href="#">Forgot your password?</a>
+            <div className="mt-5 text-sm border-b border-foreground py-4 text-foreground">
+              <Link href="#" className="hover:underline">
+                {t("forgotPassword")}
+              </Link>
             </div>
 
-            <div className="mt-3 text-xs flex justify-between items-center text-foreground">
-              <p>Dont have an account?</p>
-              <button className="py-2 px-5 bg-rainbow rounded-xl hover:scale-110 duration-300 font-bold">
-                Register
-              </button>
+            <div className="mt-3 gap-2 text-sm flex justify-between items-center text-foreground">
+              <p>{t("notHaveAccount")}</p>
+              <Button className="py-2 px-5 bg-rainbow hover:scale-110 duration-300">
+                <Link href="/register">{t("registerButton")}</Link>
+              </Button>
             </div>
           </div>
 
           <div className="md:block hidden w-1/2 relative">
-            {randomQuote.length > 100 ? (
-              <Image
-                className="rounded-2xl h-[600px] opacity-40"
-                src={vn_sample_image}
-                alt="Login Image"
-              />
-            ) : (
-              <Image
-                className="rounded-2xl h-[600px] opacity-40"
-                src={sample_image}
-                alt="Login Image"
-              />
-            )}
+            <Image
+              className="rounded-2xl h-[600px] opacity-90 backdrop-blur-lg bg-white bg-opacity-30 shadow-lg"
+              src={vn_sample_image}
+              alt="Login Image"
+              priority
+            />
 
-            <div className="absolute top-2/3 text-foreground ml-[70px] mr-[30px] text-right">
-              <p className="italic font-bold">
+            <div className="absolute top-2/3 ml-[70px] mr-[30px] text-right bg-secondary px-5 py-2 rounded-tl-3xl rounded-br-3xl">
+              <p className="italic font-bold font-serif">
                 &quot;
-                {randomQuote.length > 100
-                  ? "Nothing is more important than independence and freedom"
-                  : randomQuote.quote}
+                {randomQuote.quote}
                 &quot;
               </p>
-              <p className="mt-2">
-                -{randomQuote.length > 100 ? "Ho Chi Minh" : randomQuote.author}
-              </p>
+              <p className="mt-2 font-serif">- {randomQuote.author}</p>
             </div>
           </div>
         </div>

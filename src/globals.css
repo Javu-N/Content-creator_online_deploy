@@ -6,6 +6,8 @@
 
 @layer base {
   :root {
+    --gold: linear-gradient(45deg, #c49102, #ffcf40, #ffdc73);
+
     --rainbow: linear-gradient(70deg, rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153));
 
     --blue-rainbow: rgb(59, 130, 246);
@@ -18,7 +20,7 @@
 
     --foreground: 0 0% 3.9%;
 
-    --card: 0 0% 97%;
+    --card: 0 0% 80%;
 
     --card-foreground: 0 0% 3.9%;
 

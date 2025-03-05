@@ -1,5 +1,5 @@
 import createMiddleware from "next-intl/middleware";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const handleI18nRouting = createMiddleware({
@@ -8,15 +8,15 @@ export function middleware(request: NextRequest) {
   });
 
   const response = handleI18nRouting(request);
-  const locale = request.cookies.get("NEXT_LOCALE")?.value || "en"; // Default to "en"
+  // const locale = request.cookies.get("NEXT_LOCALE")?.value || "en"; // Default to "en"
 
   // If the user visits "/", redirect them to their locale-specific home page
-  if (
-    request.nextUrl.pathname === "/" ||
-    request.nextUrl.pathname === `/${locale}`
-  ) {
-    return NextResponse.redirect(new URL(`/${locale}/home`, request.url));
-  }
+  // if (
+  //   request.nextUrl.pathname === "/" ||
+  //   request.nextUrl.pathname === `/${locale}`
+  // ) {
+  //   return NextResponse.redirect(new URL(`/${locale}/home`, request.url));
+  // }
 
   return response;
 }

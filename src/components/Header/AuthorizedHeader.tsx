@@ -12,18 +12,17 @@ import {
 import { Link } from "@/i18n/routing";
 import { Input } from "@/components/ui/input";
 import {
+  Bell,
   ChevronDown,
-  ChevronUp,
   MenuIcon,
   MoonIcon,
   SearchIcon,
   SunIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import defaultAvatar from "$/public/default-avatar.jpeg";
 
 const components: { title: string }[] = [
   {
@@ -88,12 +87,11 @@ const components: { title: string }[] = [
   },
 ];
 
-const Header = () => {
+export const AuthorizedHeader = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isExploreMenuOpen, setIsExploreMenuOpen] = useState(false);
-  const isLogin = false;
+  // const [isExploreMenuOpen, setIsExploreMenuOpen] = useState(false);
 
   const handleThemeChange = () => {
     if (theme === "dark") {
@@ -103,9 +101,9 @@ const Header = () => {
     }
   };
 
-  const toggleExploreMenu = () => {
-    setIsExploreMenuOpen(!isExploreMenuOpen);
-  };
+  // const toggleExploreMenu = () => {
+  //   setIsExploreMenuOpen(!isExploreMenuOpen);
+  // };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -117,8 +115,8 @@ const Header = () => {
 
   return (
     <header className="fixed w-full bg-card z-50">
-      <nav className="py-2 lg:py-3 px-2 lg:px-5">
-        <div className="flex justify-between items-center ">
+      <nav className="relative">
+        <div className="flex justify-between items-center py-3 px-2 lg:px-5">
           <div className="flex">
             <span className="bg-rainbow text-transparent bg-clip-text text-[1.5rem] font-bold">
               StoriVerse
@@ -165,32 +163,42 @@ const Header = () => {
             </div>
           </div>
           <div className="flex gap-3 items-center">
-            <div className={cn("flex gap-2", isLogin ? "hidden" : "")}>
-              <Button>
-                <Link href="/auth/login">Login</Link>
-              </Button>
-              <Button>
-                <Link href="/register">Register</Link>
-              </Button>
-            </div>
             {mounted && (
-              <button onClick={handleThemeChange}>
+              <button
+                onClick={handleThemeChange}
+                className="hover:cursor-pointer hover:opacity-80"
+              >
                 {theme === "dark" ? (
-                  <MoonIcon className="hover:cursor-pointer text-yellow-300 font-" />
+                  <MoonIcon className="text-yellow-300" />
                 ) : (
-                  <SunIcon className="hover:cursor-pointer text-red-500" />
+                  <SunIcon className="text-red-500" />
                 )}
               </button>
             )}
-            <div className={(cn("flex"), isLogin ? "" : "hidden")}>
+
+            <button className="relative hover:opacity-80 hover:cursor-pointer mr-5">
+              <Bell />
+              <div className="w-6 h-6 flex items-center justify-center rounded-full bg-red-500 absolute bottom-3 left-3">
+                <span className="text-[10px] font-serif font-semibold">
+                  122
+                </span>
+              </div>
+            </button>
+
+            <button className="relative hover:opacity-80 hover:cursor-pointer">
               <Avatar>
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                />
+                <AvatarImage src={defaultAvatar.src} alt="default-avatar" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-            </div>
+              <div className="rounded-full bg-foreground absolute top-6 left-6">
+                <ChevronDown
+                  className="text-background"
+                  strokeWidth={1}
+                  size={18}
+                />
+              </div>
+            </button>
+
             <div className=" lg:hidden">
               <MenuIcon
                 className="hover:cursor-pointer"
@@ -200,68 +208,10 @@ const Header = () => {
           </div>
         </div>
 
-        <div
-          className={`lg:hidden transition-all duration-300 ease-in-out ${
-            isMobileMenuOpen ? "max-h-200 opacity-100" : "max-h-0 opacity-0"
-          } overflow-hidden`}
-        >
-          <div className={`px-2 pt-2 pb-3 space-y-1 font-bold`}>
-            <Link href="/" className="hover:bg-accent px-3 py-2 rounded-xl">
-              Home
-            </Link>
-
-            <hr />
-
-            {/* Explore button */}
-            <button
-              onClick={toggleExploreMenu}
-              className="flex gap-1 items-center  hover:bg-accent rounded-xl px-3 py-2"
-            >
-              <div className="block ">Explore</div>
-              {isExploreMenuOpen ? <ChevronUp /> : <ChevronDown />}
-            </button>
-
-            {/* Explore Content: Only show on trigger */}
-            <div
-              className={`lg:hidden transition-all duration-300 ease-in-out ${
-                isExploreMenuOpen
-                  ? "max-h-200 opacity-100"
-                  : "max-h-0 opacity-0"
-              } overflow-auto`}
-            >
-              <div className="flex-col  pl-6 font-medium">
-                <Link
-                  href="/"
-                  className="block hover:bg-accent px-3 py-2 rounded-xl"
-                >
-                  More ...
-                </Link>
-                {components.slice(0, 5).map((component) => (
-                  <Link
-                    href="/"
-                    className="block hover:bg-accent px-3 py-2 rounded-xl"
-                    key={component.title}
-                  >
-                    {component.title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <hr />
-
-            <div className="flex items-center gap-2 px-3 py-2">
-              <SearchIcon />
-              <Input
-                className=" rounded-xl w-full"
-                type="email"
-                placeholder="Email"
-              />
-            </div>
-          </div>
+        <div className="absolute top-15 md:right-3 md:translate-x-0 md:left-auto left-1/2 -translate-x-1/2 bg-blue-500 w-[90%] md:w-56">
+          xxxx
         </div>
       </nav>
     </header>
   );
 };
-
-export { Header };

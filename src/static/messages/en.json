@@ -1,13 +1,15 @@
 {
     "Login": {
         "title": "Login",
-        "about": "Explore the world of storytelling",
+        "about": "If you are already a member, easily log in",
         "email": "Email",
         "password": "Password",
         "loginButton": "Login",
         "loginButtonWithGoogle": "Login with Google",
-        "forGotPassword": "Forgot your Password?",
+        "forgotPassword": "Forgot your Password?",
         "notHaveAccount": "Don't have an account?",
-        "registerButton": "Register"
+        "registerButton": "Register",
+        "or": "or",
+        "loginFailed": "Login Failed. Your email or password may incorrect, please try again"
     }
 }
