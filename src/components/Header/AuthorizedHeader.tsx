@@ -91,6 +91,7 @@ export const AuthorizedHeader = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   // const [isExploreMenuOpen, setIsExploreMenuOpen] = useState(false);
 
   const handleThemeChange = () => {
@@ -107,6 +108,10 @@ export const AuthorizedHeader = () => {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const toggleProfileMenu = () => {
+    setIsProfileMenuOpen(!isProfileMenuOpen);
   };
 
   useEffect(() => {
@@ -185,7 +190,10 @@ export const AuthorizedHeader = () => {
               </div>
             </button>
 
-            <button className="relative hover:opacity-80 hover:cursor-pointer">
+            <button
+              className="relative hover:opacity-80 hover:cursor-pointer"
+              onClick={toggleProfileMenu}
+            >
               <Avatar>
                 <AvatarImage src={defaultAvatar.src} alt="default-avatar" />
                 <AvatarFallback>CN</AvatarFallback>
@@ -208,9 +216,11 @@ export const AuthorizedHeader = () => {
           </div>
         </div>
 
-        <div className="absolute top-15 md:right-3 md:translate-x-0 md:left-auto left-1/2 -translate-x-1/2 bg-blue-500 w-[90%] md:w-56">
-          xxxx
-        </div>
+        {isProfileMenuOpen && (
+          <div className="absolute top-14 md:right-3 md:translate-x-0 md:left-auto left-1/2 -translate-x-1/2 bg-secondary shadow-2xl w-[90%] md:w-80 rounded-md flex-col px-5">
+            xxxx
+          </div>
+        )}
       </nav>
     </header>
   );
