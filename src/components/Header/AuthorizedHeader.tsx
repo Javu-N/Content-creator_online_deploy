@@ -13,10 +13,13 @@ import { Link } from "@/i18n/routing";
 import { Input } from "@/components/ui/input";
 import {
   Bell,
+  BookHeart,
   ChevronDown,
-  MenuIcon,
+  LogOut,
   MoonIcon,
   SearchIcon,
+  ShoppingCart,
+  SquarePen,
   SunIcon,
 } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -90,9 +93,9 @@ const components: { title: string }[] = [
 export const AuthorizedHeader = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  // const [isExploreMenuOpen, setIsExploreMenuOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const handleThemeChange = () => {
     if (theme === "dark") {
@@ -106,12 +109,14 @@ export const AuthorizedHeader = () => {
   //   setIsExploreMenuOpen(!isExploreMenuOpen);
   // };
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+  const toggleProfileMenu = () => {
+    setIsNotificationOpen(false);
+    setIsProfileMenuOpen(!isProfileMenuOpen);
   };
 
-  const toggleProfileMenu = () => {
-    setIsProfileMenuOpen(!isProfileMenuOpen);
+  const toggleNotification = () => {
+    setIsProfileMenuOpen(false);
+    setIsNotificationOpen(!isNotificationOpen);
   };
 
   useEffect(() => {
@@ -123,7 +128,7 @@ export const AuthorizedHeader = () => {
       <nav className="relative">
         <div className="flex justify-between items-center py-3 px-2 lg:px-5">
           <div className="flex">
-            <span className="bg-rainbow text-transparent bg-clip-text text-[1.5rem] font-bold">
+            <span className="bg-rainbow text-transparent bg-clip-text text-[1.25rem] sm:text-[1.5rem] font-bold">
               StoriVerse
             </span>
           </div>
@@ -167,7 +172,12 @@ export const AuthorizedHeader = () => {
               />
             </div>
           </div>
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-5 items-center">
+            <button className="flex gap-2 items-center">
+              <span>Write</span>
+              <SquarePen size={18} className="block sm:hidden" />
+              <SquarePen className="hidden sm:block" />
+            </button>
             {mounted && (
               <button
                 onClick={handleThemeChange}
@@ -181,12 +191,13 @@ export const AuthorizedHeader = () => {
               </button>
             )}
 
-            <button className="relative hover:opacity-80 hover:cursor-pointer mr-5">
+            <button
+              className="relative hover:opacity-80 hover:cursor-pointer"
+              onClick={toggleNotification}
+            >
               <Bell />
-              <div className="w-6 h-6 flex items-center justify-center rounded-full bg-red-500 absolute bottom-3 left-3">
-                <span className="text-[10px] font-serif font-semibold">
-                  122
-                </span>
+              <div className="w-5 h-5 flex items-center justify-center rounded-full bg-red-500 absolute bottom-3 left-3">
+                <span className="text-[9px] font-serif font-semibold">122</span>
               </div>
             </button>
 
@@ -206,19 +217,38 @@ export const AuthorizedHeader = () => {
                 />
               </div>
             </button>
-
-            <div className=" lg:hidden">
-              <MenuIcon
-                className="hover:cursor-pointer"
-                onClick={toggleMobileMenu}
-              />
-            </div>
           </div>
         </div>
 
         {isProfileMenuOpen && (
-          <div className="absolute top-14 md:right-3 md:translate-x-0 md:left-auto left-1/2 -translate-x-1/2 bg-secondary shadow-2xl w-[90%] md:w-80 rounded-md flex-col px-5">
-            xxxx
+          <div className="absolute top-14 md:right-3 md:translate-x-0 md:left-auto left-1/2 -translate-x-1/2 bg-card w-[90%] md:w-80 rounded-md flex-col px-5 pt-2 pb-4 space-y-3">
+            <h2 className="font-bold text-md">Account</h2>
+            <div className="flex items-center bg-secondary gap-3 px-3 py-1 rounded-md hover:bg-accent hover:cursor-pointer">
+              <Avatar>
+                <AvatarImage src={defaultAvatar.src} alt="default-avatar" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <span className="font-semibold">Name of the User</span>
+            </div>
+            <hr className="border-b-[0.5px] border-[#65686C]" />
+            <div className="flex items-center bg-secondary  gap-3 px-3 py-2 rounded-md hover:bg-accent hover:cursor-pointer">
+              <BookHeart />
+              <span className="font-semibold text-sm">My Read Lists</span>
+            </div>
+            <div className="flex items-center bg-secondary  gap-3 px-3 py-2 rounded-md hover:bg-accent hover:cursor-pointer">
+              <ShoppingCart />
+              <span className="font-semibold text-sm">Cart</span>
+            </div>
+            <div className="flex items-center bg-red-500  gap-3 px-3 py-2 rounded-md hover:bg-red-400 hover:cursor-pointer">
+              <LogOut />
+              <span className="font-semibold text-sm">Logout</span>
+            </div>
+          </div>
+        )}
+
+        {isNotificationOpen && (
+          <div className="absolute top-14 md:right-3 md:translate-x-0 md:left-auto left-1/2 -translate-x-1/2 bg-card w-[90%] md:w-80 rounded-md flex-col px-5 pt-2 pb-4 space-y-3">
+            <h2 className="font-bold text-md">Notifications</h2>
           </div>
         )}
       </nav>
