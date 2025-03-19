@@ -52,7 +52,7 @@ const Login = () => {
         router.push("/auth/login?error=true");
       }
 
-      router.push("/");
+      router.push("/home");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         const message =
