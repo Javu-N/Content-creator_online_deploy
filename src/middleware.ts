@@ -44,6 +44,11 @@ export const middleware = async (request: NextRequest) => {
 
   const pathWithoutLocale = "/" + pathname.split("/").slice(2).join("/");
 
+  if (pathWithoutLocale == "/" && token) {
+    const locale = request.cookies.get("NEXT_LOCALE")?.value;
+    return NextResponse.redirect(new URL(`/${locale}/home`, request.nextUrl));
+  }
+
   // By pass public route
   if (publicUrl.includes(pathWithoutLocale)) {
     Logger.debug("Public Route", "Server");

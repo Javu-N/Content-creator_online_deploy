@@ -4,12 +4,11 @@ import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { Input } from "@/components/ui/input";
 import {
   Bell,
@@ -26,6 +25,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import defaultAvatar from "$/public/default-avatar.jpeg";
+import axios from "axios";
 
 const components: { title: string }[] = [
   {
@@ -96,6 +96,7 @@ export const AuthorizedHeader = () => {
 
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const router = useRouter();
 
   const handleThemeChange = () => {
     if (theme === "dark") {
@@ -105,10 +106,6 @@ export const AuthorizedHeader = () => {
     }
   };
 
-  // const toggleExploreMenu = () => {
-  //   setIsExploreMenuOpen(!isExploreMenuOpen);
-  // };
-
   const toggleProfileMenu = () => {
     setIsNotificationOpen(false);
     setIsProfileMenuOpen(!isProfileMenuOpen);
@@ -117,6 +114,18 @@ export const AuthorizedHeader = () => {
   const toggleNotification = () => {
     setIsProfileMenuOpen(false);
     setIsNotificationOpen(!isNotificationOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const logoutResult = await axios.post("/api/auth/logout");
+
+      if (logoutResult.data["success"]) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   useEffect(() => {
@@ -136,12 +145,12 @@ export const AuthorizedHeader = () => {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuLink
-                    href="/"
+                  <Link
+                    href="/home"
                     className={`${navigationMenuTriggerStyle()}`}
                   >
                     <span className="text-[1rem]">Home</span>
-                  </NavigationMenuLink>
+                  </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>
@@ -239,10 +248,13 @@ export const AuthorizedHeader = () => {
               <ShoppingCart />
               <span className="font-semibold text-sm">Cart</span>
             </div>
-            <div className="flex items-center bg-red-500  gap-3 px-3 py-2 rounded-md hover:bg-red-400 hover:cursor-pointer">
+            <button
+              className="flex items-center bg-red-500  gap-3 px-3 py-2 rounded-md hover:bg-red-400 hover:cursor-pointer w-full"
+              onClick={handleLogout}
+            >
               <LogOut />
               <span className="font-semibold text-sm">Logout</span>
-            </div>
+            </button>
           </div>
         )}
 
