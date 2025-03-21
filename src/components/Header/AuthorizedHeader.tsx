@@ -8,7 +8,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Link, useRouter } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Input } from "@/components/ui/input";
 import {
   Bell,
@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import defaultAvatar from "$/public/default-avatar.jpeg";
 import axios from "axios";
+import LanguageSelector from "@/components/Header/LanguageSelector";
 
 const components: { title: string }[] = [
   {
@@ -97,6 +98,7 @@ export const AuthorizedHeader = () => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleThemeChange = () => {
     if (theme === "dark") {
@@ -210,53 +212,73 @@ export const AuthorizedHeader = () => {
               </div>
             </button>
 
-            <button
-              className="relative hover:opacity-80 hover:cursor-pointer"
-              onClick={toggleProfileMenu}
-            >
-              <Avatar>
-                <AvatarImage src={defaultAvatar.src} alt="default-avatar" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <div className="rounded-full bg-foreground absolute top-6 left-6">
-                <ChevronDown
-                  className="text-background"
-                  strokeWidth={1}
-                  size={18}
-                />
-              </div>
-            </button>
+            <div>
+              <button
+                className="relative hover:opacity-80 hover:cursor-pointer"
+                onClick={toggleProfileMenu}
+              >
+                <Avatar>
+                  <AvatarImage src={defaultAvatar.src} alt="default-avatar" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <div className="rounded-full bg-foreground absolute top-6 left-6">
+                  <ChevronDown
+                    className="text-background"
+                    strokeWidth={1}
+                    size={18}
+                  />
+                </div>
+              </button>
+
+              {isProfileMenuOpen && (
+                <div
+                  className="
+            absolute 
+          top-14 
+          md:right-3 
+          md:translate-x-0 
+          md:left-auto 
+          left-1/2 
+          -translate-x-1/2 
+          bg-card w-[90%] 
+          md:w-80 
+          rounded-md flex-col px-5 pt-2 pb-4 space-y-3"
+                >
+                  <h2 className="font-bold text-md">Account</h2>
+                  <div className="flex items-center bg-secondary gap-3 px-3 py-1 rounded-md hover:bg-accent hover:cursor-pointer">
+                    <Avatar>
+                      <AvatarImage
+                        src={defaultAvatar.src}
+                        alt="default-avatar"
+                      />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <span className="font-semibold">Name of the User</span>
+                  </div>
+                  <hr className="border-b-[0.5px] border-[#65686C]" />
+                  <div className="flex items-center bg-secondary  gap-3 px-3 py-2 rounded-md hover:bg-accent hover:cursor-pointer">
+                    <BookHeart />
+                    <span className="font-semibold text-sm">My Read Lists</span>
+                  </div>
+                  <div className="flex items-center bg-secondary  gap-3 px-3 py-2 rounded-md hover:bg-accent hover:cursor-pointer">
+                    <ShoppingCart />
+                    <span className="font-semibold text-sm">Cart</span>
+                  </div>
+
+                  <LanguageSelector router={router} pathname={pathname} />
+
+                  <button
+                    className="flex items-center bg-red-500  gap-3 px-3 py-2 rounded-md hover:bg-red-400 hover:cursor-pointer w-full"
+                    onClick={handleLogout}
+                  >
+                    <LogOut />
+                    <span className="font-semibold text-sm">Logout</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-
-        {isProfileMenuOpen && (
-          <div className="absolute top-14 md:right-3 md:translate-x-0 md:left-auto left-1/2 -translate-x-1/2 bg-card w-[90%] md:w-80 rounded-md flex-col px-5 pt-2 pb-4 space-y-3">
-            <h2 className="font-bold text-md">Account</h2>
-            <div className="flex items-center bg-secondary gap-3 px-3 py-1 rounded-md hover:bg-accent hover:cursor-pointer">
-              <Avatar>
-                <AvatarImage src={defaultAvatar.src} alt="default-avatar" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <span className="font-semibold">Name of the User</span>
-            </div>
-            <hr className="border-b-[0.5px] border-[#65686C]" />
-            <div className="flex items-center bg-secondary  gap-3 px-3 py-2 rounded-md hover:bg-accent hover:cursor-pointer">
-              <BookHeart />
-              <span className="font-semibold text-sm">My Read Lists</span>
-            </div>
-            <div className="flex items-center bg-secondary  gap-3 px-3 py-2 rounded-md hover:bg-accent hover:cursor-pointer">
-              <ShoppingCart />
-              <span className="font-semibold text-sm">Cart</span>
-            </div>
-            <button
-              className="flex items-center bg-red-500  gap-3 px-3 py-2 rounded-md hover:bg-red-400 hover:cursor-pointer w-full"
-              onClick={handleLogout}
-            >
-              <LogOut />
-              <span className="font-semibold text-sm">Logout</span>
-            </button>
-          </div>
-        )}
 
         {isNotificationOpen && (
           <div className="absolute top-14 md:right-3 md:translate-x-0 md:left-auto left-1/2 -translate-x-1/2 bg-card w-[90%] md:w-80 rounded-md flex-col px-5 pt-2 pb-4 space-y-3">
