@@ -28,6 +28,7 @@ export const POST = async (request: Request) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
+      maxAge: Number(process.env.COOKIE_MAX_AGE),
     });
 
     return NextResponse.json({ success: true });

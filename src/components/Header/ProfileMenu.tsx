@@ -73,7 +73,7 @@ const ProfileMenu = ({ router, pathname }: ProfileMenuProps) => {
   }, []);
 
   return (
-    <div ref={profileMenuRef}>
+    <div ref={profileMenuRef} className="items-center flex">
       <button
         className="relative hover:opacity-80 hover:cursor-pointer"
         onClick={toggleProfileMenu}

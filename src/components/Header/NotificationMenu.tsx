@@ -26,7 +26,7 @@ const NotificationMenu = () => {
   }, []);
 
   return (
-    <div ref={notificationRef}>
+    <div ref={notificationRef} className="items-center flex">
       <button
         className="relative hover:opacity-80 hover:cursor-pointer"
         onClick={toggleNotification}
