@@ -1,7 +1,8 @@
+import AuthorizedHome from "@/components/AuthorizedHome/AuthorizedHome";
 import React from "react";
 
 const HomePage = () => {
-  return <div>HomePage</div>;
+  return <AuthorizedHome />;
 };
 
 export default HomePage;
