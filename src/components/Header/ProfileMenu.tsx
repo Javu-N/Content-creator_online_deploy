@@ -17,7 +17,7 @@ import Image from "next/image";
 import defaultAvatar from "$/public/default-avatar.jpeg";
 import axios from "axios";
 import { usePathname, useRouter } from "@/i18n/routing";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import vietnam_flag from "$/public/vietnam.png";
 import american_flag from "$/public/usa.png";
 
@@ -27,6 +27,7 @@ interface ProfileMenuProps {
 }
 
 const ProfileMenu = ({ router, pathname }: ProfileMenuProps) => {
+  const t = useTranslations("AuthorizedHeader");
   const locale = useLocale();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [selectedLocale, setSelectedLocale] = useState(locale);
@@ -101,7 +102,7 @@ const ProfileMenu = ({ router, pathname }: ProfileMenuProps) => {
           md:w-80 
           rounded-md flex-col px-5 pt-2 pb-4 space-y-3"
         >
-          <h2 className="font-bold text-md">Account</h2>
+          <h2 className="font-bold text-md">{t("ProfileMenu.account")}</h2>
           <div className="flex items-center bg-secondary gap-3 px-3 py-1 rounded-md hover:bg-accent hover:cursor-pointer">
             <Avatar>
               <AvatarImage src={defaultAvatar.src} alt="default-avatar" />
@@ -112,11 +113,15 @@ const ProfileMenu = ({ router, pathname }: ProfileMenuProps) => {
           <hr className="border-b-[0.5px] border-[#65686C]" />
           <div className="flex items-center bg-secondary  gap-3 px-3 py-2 rounded-md hover:bg-accent hover:cursor-pointer">
             <BookHeart />
-            <span className="font-semibold text-sm">My Read Lists</span>
+            <span className="font-semibold text-sm">
+              {t("ProfileMenu.myReadLists")}
+            </span>
           </div>
           <div className="flex items-center bg-secondary  gap-3 px-3 py-2 rounded-md hover:bg-accent hover:cursor-pointer">
             <ShoppingCart />
-            <span className="font-semibold text-sm">Cart</span>
+            <span className="font-semibold text-sm">
+              {t("ProfileMenu.cart")}
+            </span>
           </div>
 
           <Dialog>
@@ -136,7 +141,9 @@ const ProfileMenu = ({ router, pathname }: ProfileMenuProps) => {
                   />
                 )}
 
-                <span className="font-semibold text-sm">Language</span>
+                <span className="font-semibold text-sm">
+                  {t("ProfileMenu.language")}
+                </span>
               </div>
             </DialogTrigger>
             <DialogContent
@@ -144,14 +151,14 @@ const ProfileMenu = ({ router, pathname }: ProfileMenuProps) => {
               ref={languageDialogRef}
             >
               <DialogHeader>
-                <DialogTitle>Language Settings</DialogTitle>
+                <DialogTitle>{t("LanguageSettings.title")}</DialogTitle>
                 <DialogDescription>
-                  This changes only affects the language of the interface.
+                  {t("LanguageSettings.description")}
                 </DialogDescription>
               </DialogHeader>
               <div className="flex space-x-2 items-center justify-center sm:justify-start">
                 <label htmlFor="dropdown" className=" font-semibold">
-                  Choose an option:
+                  {t("LanguageSettings.chooseAnOption")}:
                 </label>
                 <div className="relative">
                   <select
@@ -161,8 +168,10 @@ const ProfileMenu = ({ router, pathname }: ProfileMenuProps) => {
                     value={selectedLocale}
                     onChange={(e) => setSelectedLocale(e.target.value)}
                   >
-                    <option value="vi">Vietnamese</option>
-                    <option value="en">English</option>
+                    <option value="vi">
+                      {t("LanguageSettings.vietnamese")}
+                    </option>
+                    <option value="en">{t("LanguageSettings.english")}</option>
                   </select>
                   <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
                     ▼
@@ -170,7 +179,9 @@ const ProfileMenu = ({ router, pathname }: ProfileMenuProps) => {
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={handleSaveChangeLanguage}>Save changes</Button>
+                <Button onClick={handleSaveChangeLanguage}>
+                  {t("LanguageSettings.saveChange")}
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -180,7 +191,9 @@ const ProfileMenu = ({ router, pathname }: ProfileMenuProps) => {
             onClick={handleLogout}
           >
             <LogOut />
-            <span className="font-semibold text-sm">Logout</span>
+            <span className="font-semibold text-sm">
+              {t("ProfileMenu.logout")}
+            </span>
           </button>
         </div>
       )}

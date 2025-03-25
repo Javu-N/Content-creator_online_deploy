@@ -11,5 +11,22 @@
         "registerButton": "Register",
         "or": "or",
         "loginFailed": "Login Failed. Your email or password may incorrect, please try again"
+    },
+    "AuthorizedHeader": {
+        "ProfileMenu": {
+            "account": "Account",
+            "myReadLists": "My Read Lists",
+            "cart": "Cart",
+            "language": "Language",
+            "logout": "Logout"
+        },
+        "LanguageSettings": {
+            "title": "Language Settings",
+            "description": "This changes only affects the language of the interface.",
+            "vietnamese": "Vietnamese",
+            "english": "English",
+            "chooseAnOption": "Choose an option",
+            "saveChange": "Save Change"
+        }
     }
 }
