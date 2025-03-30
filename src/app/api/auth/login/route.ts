@@ -24,7 +24,7 @@ export const POST = async (request: Request) => {
     cookies().set({
       name: "token",
       value: token,
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",

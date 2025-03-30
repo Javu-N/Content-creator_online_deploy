@@ -1,7 +1,8 @@
 import { CircleX, ImageIcon } from "lucide-react";
-import React, { ChangeEvent, FormEvent, Ref, useRef } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useRef } from "react";
 
 import Image from "next/image";
+import { z } from "zod";
 
 type FormData = {
   storyTitle: string;
@@ -10,31 +11,63 @@ type FormData = {
 };
 
 interface Props {
-  handlePostSubmit: (e: FormEvent) => void;
-  handleFormChange: (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
-  handleInputText: (event: ChangeEvent<HTMLTextAreaElement>) => void;
   setPreviewImage: (value: string | null) => void;
+  setErrorMessage: (value: string) => void;
+  setFormData: (value: FormData) => void;
+  setBasicStep: (value: boolean) => void;
+  setGenreStep: (value: boolean) => void;
+  setTextVal: (value: string) => void;
+  textVal: string;
   formData: FormData;
   errorMessage: string;
-  textAreaRef: Ref<HTMLTextAreaElement>;
-  textVal: string;
   previewImage: string | null;
 }
 
+const schema = z.object({
+  storyTitle: z.string(),
+  chapterName: z.string(),
+  chapterContent: z.string().min(1, "You have not typed anything"),
+});
+
 const BasicInfoInput = ({
-  handlePostSubmit,
-  handleFormChange,
-  handleInputText,
   setPreviewImage,
-  errorMessage,
+  setErrorMessage,
+  setFormData,
+  setBasicStep,
+  setGenreStep,
+  setTextVal,
   formData,
-  textAreaRef,
-  textVal,
+  errorMessage,
   previewImage,
+  textVal,
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleInputText = (event: ChangeEvent<HTMLTextAreaElement>): void => {
+    setTextVal(event.target.value);
+  };
+
+  const resizeTextArea = () => {
+    if (textAreaRef.current) {
+      const threshold = window.innerHeight * 0.4;
+      textAreaRef.current.style.height = "auto";
+
+      if (textAreaRef.current?.scrollHeight < threshold) {
+        textAreaRef.current.style.height =
+          textAreaRef.current?.scrollHeight + "px";
+      } else {
+        textAreaRef.current.style.height = threshold + "px";
+      }
+    }
+  };
+
+  const handleFormChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -49,6 +82,20 @@ const BasicInfoInput = ({
     }
   };
 
+  const handlePostSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const validateResult = schema.safeParse(formData);
+
+    if (!validateResult.success) {
+      const error = validateResult.error.flatten().fieldErrors;
+      setErrorMessage(error.chapterContent?.[0] || "");
+      return;
+    }
+
+    setBasicStep(false);
+    setGenreStep(true);
+  };
+
   const deletePreviewImage = () => {
     if (previewImage) {
       URL.revokeObjectURL(previewImage);
@@ -56,6 +103,10 @@ const BasicInfoInput = ({
       fileInputRef.current!.value = "";
     }
   };
+
+  useEffect(() => {
+    resizeTextArea();
+  }, [textVal]);
 
   return (
     <form className="px-4 text-sm space-y-3" onSubmit={handlePostSubmit}>

@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  ChangeEvent,
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
@@ -17,73 +11,56 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-import { z } from "zod";
 import GenreMultiSelect from "./GenreMultiSelect";
 import default_avatar from "$/public/default-avatar.jpeg";
 import BasicInfoInput from "./BasicInfoInput";
+import { generateApi, GET_ALL_GENRES } from "@/constants/api";
+import axios from "axios";
+import Cookies from "js-cookie";
 
-const schema = z.object({
-  storyTitle: z.string(),
-  chapterName: z.string(),
-  chapterContent: z.string().min(1, "You have not typed anything"),
-});
+type Genre = {
+  genreId: number;
+  genreName: string;
+};
 
 const PostInput = () => {
-  const [textVal, setTextVal] = useState("");
   const [formData, setFormData] = useState({
     storyTitle: "",
     chapterName: "",
     chapterContent: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [textVal, setTextVal] = useState("");
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const [basicStep, setBasicStep] = useState<boolean>(true);
   const [genreStep, setGenreStep] = useState<boolean>(false);
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [genreList, setGenreList] = useState<Genre[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadGenreError, setLoadGenreError] = useState(null);
 
-  const handleInputText = (event: ChangeEvent<HTMLTextAreaElement>): void => {
-    setTextVal(event.target.value);
-  };
+  const getAllGenre = async () => {
+    const token = Cookies.get("token");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
 
-  const resizeTextArea = () => {
-    if (textAreaRef.current) {
-      const threshold = window.innerHeight * 0.4;
-      textAreaRef.current.style.height = "auto";
-
-      if (textAreaRef.current?.scrollHeight < threshold) {
-        textAreaRef.current.style.height =
-          textAreaRef.current?.scrollHeight + "px";
-      } else {
-        textAreaRef.current.style.height = threshold + "px";
-      }
-    }
-  };
-
-  const handleFormChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handlePostSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    const validateResult = schema.safeParse(formData);
-
-    if (!validateResult.success) {
-      const error = validateResult.error.flatten().fieldErrors;
-      setErrorMessage(error.chapterContent?.[0] || "");
-      return;
-    }
-
-    setBasicStep(false);
-    setGenreStep(true);
+    await axios
+      .get(generateApi(GET_ALL_GENRES), { headers })
+      .then((response) => {
+        setGenreList(response.data.result);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoadGenreError(error);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
-    resizeTextArea();
-  }, [textVal]);
+    getAllGenre();
+  }, []);
 
   return (
     <Dialog>
@@ -117,20 +94,24 @@ const PostInput = () => {
           <GenreMultiSelect
             setBasicStep={setBasicStep}
             setGenreStep={setGenreStep}
+            genreList={genreList}
+            loading={loading}
+            loadGenreError={loadGenreError}
           />
         )}
 
         {basicStep && (
           <BasicInfoInput
-            handlePostSubmit={handlePostSubmit}
-            handleFormChange={handleFormChange}
-            handleInputText={handleInputText}
             setPreviewImage={setPreviewImage}
-            errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
+            setFormData={setFormData}
+            setBasicStep={setBasicStep}
+            setGenreStep={setGenreStep}
+            setTextVal={setTextVal}
             formData={formData}
-            textAreaRef={textAreaRef}
-            textVal={textVal}
+            errorMessage={errorMessage}
             previewImage={previewImage}
+            textVal={textVal}
           />
         )}
       </DialogContent>
