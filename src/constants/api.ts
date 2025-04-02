@@ -3,3 +3,4 @@ export const generateApi = (apiUrl: string) => {
 };
 
 export const API_AUTH_LOGIN = "/auth/login";
+export const GET_ALL_GENRES = "/genre/all";
