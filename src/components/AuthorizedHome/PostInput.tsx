@@ -181,7 +181,7 @@ const PostInput = () => {
     <Dialog>
       <DialogTrigger asChild>
         <div
-          className="w-full bg-card flex justify-between px-5 py-2 rounded-xl items-center hover: cursor-text"
+          className="w-full bg-card flex justify-between px-5 py-2 rounded-md items-center hover: cursor-text"
           onClick={() => setErrorMessage("")}
         >
           <div className="flex space-x-3 items-center">
@@ -189,7 +189,7 @@ const PostInput = () => {
               <AvatarImage src={default_avatar.src} alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <span className="text-muted-foreground text-xs sm:text-sm">
+            <span className="text-muted-foreground  text-sm">
               Tell your story... Khang
             </span>
           </div>
