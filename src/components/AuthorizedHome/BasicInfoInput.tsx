@@ -24,8 +24,8 @@ interface Props {
 }
 
 const schema = z.object({
-  storyTitle: z.string(),
-  chapterName: z.string(),
+  storyTitle: z.string().min(1, "Story title is required"),
+  chapterName: z.string().min(1, "Chapter name is required"),
   chapterContent: z.string().min(1, "You have not typed anything"),
 });
 
@@ -51,7 +51,7 @@ const BasicInfoInput = ({
 
   const resizeTextArea = () => {
     if (textAreaRef.current) {
-      const threshold = window.innerHeight * 0.4;
+      const threshold = window.innerHeight * 0.3;
       textAreaRef.current.style.height = "auto";
 
       if (textAreaRef.current?.scrollHeight < threshold) {
@@ -162,7 +162,7 @@ const BasicInfoInput = ({
               alt="Uploaded preview"
               height={400}
               width={250}
-              className="h-[200px] w-auto rounded-md"
+              className="h-[20vh] w-auto rounded-md"
             />
             <button
               className="absolute -top-3 -right-4"
@@ -201,7 +201,7 @@ const BasicInfoInput = ({
           className="w-full px-3 py-2 bg-rainbow rounded-md active:scale-95"
           type="submit"
         >
-          Post
+          Continue
         </button>
       </div>
     </form>

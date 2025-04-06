@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
@@ -9,14 +9,23 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogDescription,
+  DialogClose,
 } from "@/components/ui/dialog";
 
 import GenreMultiSelect from "./GenreMultiSelect";
 import default_avatar from "$/public/default-avatar.jpeg";
 import BasicInfoInput from "./BasicInfoInput";
-import { generateApi, GET_ALL_GENRES } from "@/constants/api";
+import {
+  CREATE_NEW_CHAPTER_STORY,
+  CREATE_STORY,
+  generateApi,
+  GET_ALL_GENRES,
+  UPDATE_STORY_GENRE,
+} from "@/constants/api";
 import axios from "axios";
 import Cookies from "js-cookie";
+
+import { useToast } from "@/hooks/use-toast";
 
 type Genre = {
   genreId: number;
@@ -24,14 +33,17 @@ type Genre = {
 };
 
 const PostInput = () => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     storyTitle: "",
     chapterName: "",
     chapterContent: "",
   });
+  const closeRef = useRef<HTMLButtonElement>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [textVal, setTextVal] = useState("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
 
   const [basicStep, setBasicStep] = useState<boolean>(true);
   const [genreStep, setGenreStep] = useState<boolean>(false);
@@ -58,6 +70,92 @@ const PostInput = () => {
       });
   };
 
+  const handlePostStory = async () => {
+    const createStoryRequest = {
+      storyTitle: formData.storyTitle,
+    };
+
+    const token = Cookies.get("token");
+
+    const createStoryResult = await axios
+      .post(generateApi(CREATE_STORY), createStoryRequest, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .catch((error) => {
+        console.log("Error", error);
+      });
+
+    if (!createStoryResult) {
+      return;
+    }
+
+    const storyId = createStoryResult.data.result.storyId;
+
+    const updateStoryGenreRequest = {
+      genreList: selectedGenres,
+    };
+
+    await axios
+      .put(
+        generateApi(UPDATE_STORY_GENRE, storyId.toString()),
+        updateStoryGenreRequest,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .catch((error) => {
+        console.log("Error", error);
+      });
+
+    const createNewChapterRequest = {
+      chapterTitle: formData.chapterName,
+      chapterContent: formData.chapterContent,
+    };
+
+    await axios
+      .post(
+        generateApi(CREATE_NEW_CHAPTER_STORY, storyId.toString()),
+        createNewChapterRequest,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .catch((error) => {
+        console.log("Error", error);
+      });
+
+    toast({
+      duration: 2000,
+      title: "Post new story successfully",
+    });
+
+    setBasicStep(true);
+    setGenreStep(false);
+    setSelectedGenres([]);
+    setFormData({
+      storyTitle: "",
+      chapterName: "",
+      chapterContent: "",
+    });
+    setTextVal("");
+    setPreviewImage(null);
+    setErrorMessage("");
+    setGenreList(null);
+    setLoading(true);
+    setLoadGenreError(null);
+    setTimeout(() => {
+      getAllGenre();
+    }, 2000);
+
+    closeRef.current?.click();
+  };
+
   useEffect(() => {
     getAllGenre();
   }, []);
@@ -74,12 +172,12 @@ const PostInput = () => {
               <AvatarImage src={default_avatar.src} alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <span className="text-[#B8BBBF]  text-sm">
+            <span className="text-muted-foreground text-xs sm:text-sm">
               Tell your story... Khang
             </span>
           </div>
-          <button className="bg-background px-3 py-1 rounded-md active:scale-95">
-            Post
+          <button className="bg-background px-3 py-1 rounded-md active:scale-95 text-xs sm:text-sm">
+            Quick Post
           </button>
         </div>
       </DialogTrigger>
@@ -94,6 +192,9 @@ const PostInput = () => {
           <GenreMultiSelect
             setBasicStep={setBasicStep}
             setGenreStep={setGenreStep}
+            setSelectedGenres={setSelectedGenres}
+            handlePostStory={handlePostStory}
+            selectedGenres={selectedGenres}
             genreList={genreList}
             loading={loading}
             loadGenreError={loadGenreError}
@@ -114,6 +215,10 @@ const PostInput = () => {
             textVal={textVal}
           />
         )}
+
+        <DialogClose asChild>
+          <button ref={closeRef} className="hidden" />
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );

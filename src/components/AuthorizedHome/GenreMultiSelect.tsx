@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 type Genre = {
@@ -9,6 +8,9 @@ type Genre = {
 interface Props {
   setBasicStep: (value: boolean) => void;
   setGenreStep: (value: boolean) => void;
+  setSelectedGenres: (value: Genre[]) => void;
+  handlePostStory: () => Promise<void>;
+  selectedGenres: Genre[];
   genreList: Genre[] | null;
   loading: boolean;
   loadGenreError: boolean | null;
@@ -17,16 +19,23 @@ interface Props {
 const GenreMultiSelect = ({
   setBasicStep,
   setGenreStep,
+  setSelectedGenres,
+  handlePostStory,
+  selectedGenres,
   genreList,
   loading,
   loadGenreError,
 }: Props) => {
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-
-  const toggleGenre = (genre: string) => {
-    setSelectedGenres((prev) =>
-      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
-    );
+  const toggleGenre = (genre: Genre) => {
+    if (!selectedGenres.includes(genre)) {
+      const updatedSelectedGenres = [...selectedGenres, genre];
+      setSelectedGenres(updatedSelectedGenres);
+    } else {
+      const updatedSelectedGenres = selectedGenres.filter(
+        (selectedGenre) => selectedGenre !== genre
+      );
+      setSelectedGenres(updatedSelectedGenres);
+    }
   };
 
   const handleGoBack = () => {
@@ -37,7 +46,7 @@ const GenreMultiSelect = ({
   return (
     <div className="flex flex-col  gap-3">
       <div className="px-4 flex justify-center">
-        <span className="font-mono">Choose some genres</span>
+        <span className="font-mono text-sm">Choose some genres (Optional)</span>
       </div>
 
       {loadGenreError && (
@@ -59,7 +68,7 @@ const GenreMultiSelect = ({
               <label
                 className={cn(
                   "rounded-md px-2 py-2 hover:cursor-pointer",
-                  selectedGenres.includes(genre.genreName)
+                  selectedGenres.includes(genre)
                     ? "bg-rainbow"
                     : "bg-background"
                 )}
@@ -67,12 +76,12 @@ const GenreMultiSelect = ({
               >
                 <input
                   type="checkbox"
-                  checked={selectedGenres.includes(genre.genreName)}
-                  onChange={() => toggleGenre(genre.genreName)}
+                  checked={selectedGenres.includes(genre)}
+                  onChange={() => toggleGenre(genre)}
                   className="hidden"
                 />
 
-                <span className="text-sm font-mono font-semibold">
+                <span className="text-xs sm:text-sm font-mono font-semibold">
                   {genre.genreName}
                 </span>
               </label>
@@ -102,7 +111,8 @@ const GenreMultiSelect = ({
         </button>
         <button
           className="w-full px-3 py-2 bg-rainbow rounded-md active:scale-95"
-          type="submit"
+          type="button"
+          onClick={handlePostStory}
         >
           Post
         </button>

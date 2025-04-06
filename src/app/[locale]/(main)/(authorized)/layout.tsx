@@ -1,4 +1,5 @@
 import { AuthorizedHeader } from "@/components/Header/AuthorizedHeader";
+import { Toaster } from "@/components/ui/toaster";
 
 const AuthorizedLayout = ({
   children,
@@ -9,6 +10,7 @@ const AuthorizedLayout = ({
     <>
       <AuthorizedHeader />
       <main>{children}</main>
+      <Toaster />
     </>
   );
 };
