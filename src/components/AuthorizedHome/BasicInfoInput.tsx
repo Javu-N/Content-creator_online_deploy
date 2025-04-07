@@ -87,8 +87,7 @@ const BasicInfoInput = ({
     const validateResult = schema.safeParse(formData);
 
     if (!validateResult.success) {
-      const error = validateResult.error.flatten().fieldErrors;
-      setErrorMessage(error.chapterContent?.[0] || "");
+      setErrorMessage("Please fill all the fields");
       return;
     }
 
