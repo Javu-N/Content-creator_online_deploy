@@ -73,6 +73,7 @@ const PostInput = () => {
   const handlePostStory = async () => {
     const createStoryRequest = {
       storyTitle: formData.storyTitle,
+      releaseDate: new Date(),
     };
 
     const token = Cookies.get("token");
@@ -183,10 +184,13 @@ const PostInput = () => {
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[500px] bg-card px-0 pt-3 rounded-md">
-        <DialogTitle className="hidden">Post a story</DialogTitle>
-        <DialogDescription className="hidden">Post a story</DialogDescription>
-        <div className="pb-3 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[0.1px] after:bg-[#303233]">
-          <h1 className="text-center text-lg font-bold">Post a Story</h1>
+        <div className="border-b border-background px-4 py-2">
+          <DialogTitle className="text-center text-lg font-bold">
+            Post a Story
+          </DialogTitle>
+          <DialogDescription className="text-center text-xs text-muted-foreground">
+            This is a quick post feature, your story will be public immediately
+          </DialogDescription>
         </div>
         {genreStep && (
           <GenreMultiSelect

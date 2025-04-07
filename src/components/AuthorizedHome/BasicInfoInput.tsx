@@ -149,7 +149,7 @@ const BasicInfoInput = ({
           fileInputRef?.current?.click();
         }}
       >
-        <ImageIcon />
+        <ImageIcon className="text-muted-foreground" strokeWidth={1.5} />
         <span>Upload Picture</span>
       </button>
 
