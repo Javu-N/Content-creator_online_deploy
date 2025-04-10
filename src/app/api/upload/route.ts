@@ -1,15 +1,53 @@
 import { NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { jwtVerify } from "jose";
+import { Logger } from "@/utils/Logger";
+
+const verifyToken = async (request: Request) => {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader || !authHeader.includes("Bearer")) {
+    return false;
+  }
+
+  const token = authHeader.split(" ")[1];
+  try {
+    const secretKey = new Uint8Array(
+      Buffer.from(process.env.JWT_SECRET || "", "base64")
+    );
+    const { payload } = await jwtVerify(token, secretKey);
+    console.log("Token is valid:", payload);
+  } catch (error) {
+    console.error("Token verification failed:", error);
+    return false;
+  }
+
+  return true;
+};
 
 export const POST = async (request: Request) => {
+  const verified = await verifyToken(request);
+
+  if (!verified) {
+    return NextResponse.json(
+      { status: 401, error: "Unauthorized" },
+      { status: 401 }
+    );
+  }
   try {
     // Create uploads directory if it doesn't exist
     const uploadsDir = path.join(process.cwd(), "uploads");
     try {
       await mkdir(uploadsDir, { recursive: true });
     } catch (error) {
-      // Directory might already exist, ignore error
+      Logger.error(
+        `Failed to create uploads directory ${error}`,
+        "upload/route.ts"
+      );
+      return NextResponse.json(
+        { status: 500, error: "Failed to create uploads directory" },
+        { status: 500 }
+      );
     }
 
     // Parse the form data from the request
@@ -17,7 +55,10 @@ export const POST = async (request: Request) => {
     const file = formData.get("file") as File;
 
     if (!file) {
-      return NextResponse.json({ error: "File is required" }, { status: 400 });
+      return NextResponse.json(
+        { status: 400, error: "File is required" },
+        { status: 400 }
+      );
     }
 
     // Read the file contents
@@ -44,7 +85,7 @@ export const POST = async (request: Request) => {
   } catch (error) {
     console.error("Error uploading file:", error);
     return NextResponse.json(
-      { error: "Failed to upload file" },
+      { status: 500, error: "Failed to upload file" },
       { status: 500 }
     );
   }
