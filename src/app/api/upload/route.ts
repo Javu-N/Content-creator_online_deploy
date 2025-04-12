@@ -3,6 +3,7 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { jwtVerify } from "jose";
 import { Logger } from "@/utils/Logger";
+import sharp from "sharp";
 
 const verifyToken = async (request: Request) => {
   const authHeader = request.headers.get("Authorization");
@@ -23,6 +24,11 @@ const verifyToken = async (request: Request) => {
   }
 
   return true;
+};
+
+// Check if the file is an image based on MIME type
+const isImage = (mimeType: string): boolean => {
+  return mimeType.startsWith("image/");
 };
 
 export const POST = async (request: Request) => {
@@ -65,23 +71,63 @@ export const POST = async (request: Request) => {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Create a safe filename with timestamp to prevent duplicates
+    // Create a base filename with timestamp to prevent duplicates
     const timestamp = Date.now();
     const originalName = file.name.replace(/\s+/g, "-").toLowerCase();
-    const filename = `${timestamp}-${originalName}`;
-    const filepath = path.join(uploadsDir, filename);
 
-    // Write the file to the server
-    await writeFile(filepath, buffer);
+    // Check if file is an image
+    if (isImage(file.type)) {
+      try {
+        // Remove extension from original name to prepare for webp extension
+        const nameWithoutExt =
+          originalName.substring(0, originalName.lastIndexOf(".")) ||
+          originalName;
+        const webpFilename = `${timestamp}-${nameWithoutExt}.webp`;
+        const webpFilepath = path.join(uploadsDir, webpFilename);
 
-    // Return a success response
-    return NextResponse.json({
-      message: "File uploaded successfully!",
-      filename,
-      originalName: file.name,
-      size: file.size,
-      path: `/uploads/${filename}`,
-    });
+        // Convert to WebP using sharp
+        const webpBuffer = await sharp(buffer)
+          .webp({ quality: 80 }) // You can adjust quality as needed
+          .toBuffer();
+
+        // Write the WebP file
+        await writeFile(webpFilepath, webpBuffer);
+
+        // Return success response with WebP file info
+        return NextResponse.json({
+          message: "File uploaded and converted to WebP successfully!",
+          filename: webpFilename,
+          originalName: file.name,
+          size: webpBuffer.length,
+          path: `/uploads/${webpFilename}`,
+          format: "webp",
+        });
+      } catch (error) {
+        Logger.error(
+          `Failed to convert image to WebP: ${error}`,
+          "upload/route.ts"
+        );
+        return NextResponse.json(
+          { status: 500, error: "Failed to process image" },
+          { status: 500 }
+        );
+      }
+    } else {
+      // For non-image files, save as-is (optional: you could reject non-image files)
+      const filename = `${timestamp}-${originalName}`;
+      const filepath = path.join(uploadsDir, filename);
+
+      await writeFile(filepath, buffer);
+
+      return NextResponse.json({
+        message: "Non-image file uploaded successfully!",
+        filename,
+        originalName: file.name,
+        size: file.size,
+        path: `/uploads/${filename}`,
+        format: path.extname(file.name).substring(1),
+      });
+    }
   } catch (error) {
     console.error("Error uploading file:", error);
     return NextResponse.json(
