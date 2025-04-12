@@ -195,12 +195,6 @@ const BasicInfoInput = ({
 
       <div className="flex gap-2 items-center font-semibold">
         <button
-          className="w-full px-3 py-2 bg-foreground text-background rounded-md active:scale-95"
-          type="button"
-        >
-          Draft
-        </button>
-        <button
           className="w-full px-3 py-2 bg-rainbow rounded-md active:scale-95"
           type="submit"
         >
