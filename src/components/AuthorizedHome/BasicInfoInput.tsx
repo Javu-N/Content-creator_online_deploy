@@ -17,6 +17,7 @@ interface Props {
   setBasicStep: (value: boolean) => void;
   setGenreStep: (value: boolean) => void;
   setTextVal: (value: string) => void;
+  setUploadFile: (value: File | null) => void;
   textVal: string;
   formData: FormData;
   errorMessage: string;
@@ -36,6 +37,7 @@ const BasicInfoInput = ({
   setBasicStep,
   setGenreStep,
   setTextVal,
+  setUploadFile,
   formData,
   errorMessage,
   previewImage,
@@ -76,6 +78,8 @@ const BasicInfoInput = ({
       if (previewImage) {
         URL.revokeObjectURL(previewImage);
       }
+
+      setUploadFile(file);
 
       const objectURL = URL.createObjectURL(file);
       setPreviewImage(objectURL);
@@ -149,7 +153,7 @@ const BasicInfoInput = ({
           fileInputRef?.current?.click();
         }}
       >
-        <ImageIcon />
+        <ImageIcon className="text-muted-foreground" strokeWidth={1.5} />
         <span>Upload Picture</span>
       </button>
 

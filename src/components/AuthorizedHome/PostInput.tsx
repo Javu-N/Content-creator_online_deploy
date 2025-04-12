@@ -45,6 +45,8 @@ const PostInput = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
 
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+
   const [basicStep, setBasicStep] = useState<boolean>(true);
   const [genreStep, setGenreStep] = useState<boolean>(false);
 
@@ -71,11 +73,26 @@ const PostInput = () => {
   };
 
   const handlePostStory = async () => {
+    const formFile = new FormData();
+    formFile.append("file", uploadFile as File);
+    const token = Cookies.get("token");
+
+    const uploadFileResult = await axios
+      .post("/api/upload", formFile, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .catch((error) => {
+        console.log("Error", error);
+      });
+
     const createStoryRequest = {
       storyTitle: formData.storyTitle,
+      releaseDate: new Date(),
+      coverImageUri: uploadFileResult?.data.path,
     };
-
-    const token = Cookies.get("token");
 
     const createStoryResult = await axios
       .post(generateApi(CREATE_STORY), createStoryRequest, {
@@ -183,10 +200,13 @@ const PostInput = () => {
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[500px] bg-card px-0 pt-3 rounded-md">
-        <DialogTitle className="hidden">Post a story</DialogTitle>
-        <DialogDescription className="hidden">Post a story</DialogDescription>
-        <div className="pb-3 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[0.1px] after:bg-[#303233]">
-          <h1 className="text-center text-lg font-bold">Post a Story</h1>
+        <div className="border-b border-background px-4 py-2">
+          <DialogTitle className="text-center text-lg font-bold">
+            Post a Story
+          </DialogTitle>
+          <DialogDescription className="text-center text-xs text-muted-foreground">
+            This is a quick post feature, your story will be public immediately
+          </DialogDescription>
         </div>
         {genreStep && (
           <GenreMultiSelect
@@ -209,6 +229,7 @@ const PostInput = () => {
             setBasicStep={setBasicStep}
             setGenreStep={setGenreStep}
             setTextVal={setTextVal}
+            setUploadFile={setUploadFile}
             formData={formData}
             errorMessage={errorMessage}
             previewImage={previewImage}
