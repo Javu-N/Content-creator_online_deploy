@@ -1,0 +1,214 @@
+import React, { useState } from "react";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Link } from "@/i18n/routing";
+import {
+  ChevronDown,
+  CircleEllipsis,
+  Link2,
+  MessageCircle,
+  StarIcon,
+} from "lucide-react";
+
+import default_avatar from "$/public/default-avatar.jpeg";
+import StarsDialog from "./StarsDialog";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+
+import Comment from "./Comment";
+
+const mock_content =
+  "Emma hated mirrors. Ever since she was a child, she felt like they watched her. But in her new apartment, there was one she couldn’t avoid—a large antique mirror nailed into the bathroom wall. It came with the place.\n\nOne night, after brushing her teeth, she looked up and saw her reflection smile. She wasn’t smiling.\n\nFrozen, Emma blinked. The reflection mimicked her again—this time correctly. Shaking her head, she laughed nervously and chalked it up to being tired.\n\nBut the next night, it waved.\n\nEmma ran.\n\nShe covered the mirror with a towel, but the fabric was soaked and on the floor the next morning. Her reflection stood still, smiling, as she backed away in real life.\n\nDesperate, she smashed it.\n\nThe glass shattered—yet the reflection remained, smiling from the frame.\n\nEmma screamed. Her body felt heavy. She looked down, but she wasn’t there. She turned to the mirror.\n\nShe was inside it.\n\nFrom her old world, her doppelgänger stepped out, brushing shards off its shoulders.\n\nNow, Emma watches helplessly from the other side as the thing wears her skin, lives her life, and smiles… every time it passes a mirror.";
+
+const StoryPostDialog = () => {
+  const [starred, setStarred] = useState(false);
+
+  return (
+    <DialogContent className="max-w-[97vw] sm:max-w-[40vw] bg-card px-0 pt-1 rounded-md gap-0">
+      <DialogHeader className="border-b border-background px-4 pb-2">
+        <DialogTitle className="text-center text-md">
+          <h1 className="font-bold text-2xl">Story title</h1>
+          <h2 className="font-medium">chapter</h2>
+        </DialogTitle>
+        <DialogDescription className="text-center text-muted-foreground text-xs">
+          Posted by Khang Nguyen
+        </DialogDescription>
+      </DialogHeader>
+
+      <div className="overflow-auto max-h-[70vh] block px-4 scroll-container pt-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Avatar className="w-[35px] h-[35px]">
+              <AvatarImage src={default_avatar.src} alt="@shadcn" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col justify-center">
+              <h1 className="text-sm font-semibold">
+                <Link href="#" className="hover:underline">
+                  Khang Nguyen
+                </Link>
+              </h1>
+              <span className="text-xs text-muted-foreground">
+                02 April 2025
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <CircleEllipsis
+              className="text-muted-foreground cursor-pointer hover:text-primary transition-colors duration-200 ease-in-out"
+              size={22}
+            />
+          </div>
+        </div>
+
+        <div className="w-full block mt-5">
+          <div className="flex flex-col gap-1">
+            <h2 className="font-bold">Story title</h2>
+            <div className="text-sm font-serif">
+              <span className="text-xl">1: </span>
+              <h3 className="inline">Chapter name</h3>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="text-sm text-justify whitespace-pre-wrap inline">
+              <p className="inline">{mock_content}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between mt-5">
+            <Dialog>
+              <DialogTrigger asChild>
+                <button
+                  className="flex items-center gap-2 bg-secondary rounded-md px-2 py-1 active:scale-95"
+                  type="button"
+                >
+                  <span className="text-muted-foreground">21</span>
+                  <StarIcon fill="#facc15" stroke="#facc15" size={16} />
+                </button>
+              </DialogTrigger>
+
+              <StarsDialog />
+            </Dialog>
+            <div className="text-muted-foreground">0 comments</div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 mt-4 border-t border-b border-muted-foreground py-1 text-muted-foreground">
+            <button
+              className="flex justify-center items-center py-1 hover:bg-secondary w-full rounded-md hover:cursor-pointer gap-1"
+              type="button"
+              onClick={() => setStarred(!starred)}
+            >
+              {starred ? (
+                <>
+                  <StarIcon fill="#facc15" stroke="#facc15" size={15} />
+                  <span className="text-[#facc15]">Star</span>
+                </>
+              ) : (
+                <>
+                  <StarIcon size={15} />
+                  <span>Star</span>
+                </>
+              )}
+            </button>
+
+            <button
+              className="flex justify-center items-center py-1 hover:bg-secondary w-full rounded-md hover:cursor-pointer gap-1"
+              type="button"
+            >
+              <MessageCircle size={15} />
+              <span>Comment</span>
+            </button>
+
+            <div className="flex justify-center items-center py-1 hover:bg-secondary w-full rounded-md hover:cursor-pointer gap-1">
+              <Link2 size={15} />
+              <span>Copy</span>
+            </div>
+          </div>
+
+          <div className="mt-2 block">
+            {/* filter */}
+            <div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="text-muted-foreground font-bold flex items-center text-sm">
+                    <span>Newest</span>
+                    <ChevronDown strokeWidth={2} size={20} />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-card rounded-md space-y-1">
+                  <button className="flex flex-col hover:bg-secondary text-left rounded-md px-3 py-2 w-full">
+                    <span className="text-sm">Newest</span>
+                    <p className="text-xs text-muted-foreground">
+                      Show all comments with the newest comments first.
+                    </p>
+                  </button>
+
+                  <button className="flex flex-col hover:bg-secondary text-left rounded-md px-3 py-2 w-full">
+                    <span className="text-sm">Top Rated</span>
+                    <p className="text-xs text-muted-foreground">
+                      Show comments with high rated first.
+                    </p>
+                  </button>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* comment list */}
+            <div className="mt-4 flex flex-col gap-3 pb-5">
+              <Comment />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <DialogFooter>
+        <div className="border-t border-background pt-5 px-4 flex w-full gap-2 items-start">
+          <Avatar className="w-[35px] h-[35px]">
+            <AvatarImage src={default_avatar.src} alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+
+          <textarea
+            className="w-full bg-secondary rounded-md px-3 py-1 text-sm resize-none"
+            placeholder="Write a comment..."
+            rows={1}
+            onFocus={(e) => {
+              e.target.rows = 1;
+            }}
+            onBlur={(e) => {
+              e.target.rows = 1;
+            }}
+            onInput={(e) => {
+              const target = e.target as HTMLTextAreaElement;
+              target.style.height = "auto";
+              target.style.height = `${target.scrollHeight}px`;
+            }}
+          ></textarea>
+          <button
+            className="bg-rainbow px-3 py-1 rounded-md active:scale-95 text-xs sm:text-sm"
+            type="button"
+          >
+            Reply
+          </button>
+        </div>
+      </DialogFooter>
+    </DialogContent>
+  );
+};
+
+export default StoryPostDialog;
