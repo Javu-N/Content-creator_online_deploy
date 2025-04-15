@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import defaultAvatar from "$/public/default-avatar.jpeg";
 import axios from "axios";
-import { usePathname, useRouter } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import vietnam_flag from "$/public/vietnam.png";
 import american_flag from "$/public/usa.png";
@@ -103,13 +103,16 @@ const ProfileMenu = ({ router, pathname }: ProfileMenuProps) => {
           rounded-md flex-col px-5 pt-2 pb-4 space-y-3"
         >
           <h2 className="font-bold text-md">{t("ProfileMenu.account")}</h2>
-          <div className="flex items-center bg-secondary gap-3 px-3 py-1 rounded-md hover:bg-accent hover:cursor-pointer">
+          <Link
+            className="flex items-center bg-secondary gap-3 px-3 py-1 rounded-md hover:bg-accent hover:cursor-pointer"
+            href="/profile"
+          >
             <Avatar>
               <AvatarImage src={defaultAvatar.src} alt="default-avatar" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <span className="font-semibold">Name of the User</span>
-          </div>
+          </Link>
           <hr className="border-b-[0.5px] border-[#65686C]" />
           <div className="flex items-center bg-secondary  gap-3 px-3 py-2 rounded-md hover:bg-accent hover:cursor-pointer">
             <BookHeart />
