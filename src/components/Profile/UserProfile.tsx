@@ -17,7 +17,7 @@ export default function ProfilePage() {
   return (
     <div className="flex flex-col md:flex-row gap-6 p-6 bg-blue-100 min-h-screen">
       {/* Profile Card */}
-      <Card className="w-80 p-4 text-center" style={{ marginTop: "64px" }}>
+      <Card className="p-4 text-center" style={{ marginTop: "64px" }}>
         <img
           src="https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png?v=2025040502"
           alt="Profile"
