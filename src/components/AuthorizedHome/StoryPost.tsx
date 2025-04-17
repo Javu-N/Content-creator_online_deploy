@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Ref, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import default_avatar from "$/public/default-avatar.jpeg";
 import { Link } from "@/i18n/routing";
@@ -7,41 +7,55 @@ import { CircleEllipsis, Link2, MessageCircle, StarIcon } from "lucide-react";
 import { Dialog, DialogTrigger } from "../ui/dialog";
 import StarsDialog from "./StarsDialog";
 import StoryPostDialog from "./StoryPostDialog";
+import { Post } from "@/types/Post";
+
+import { formatTimestamp } from "@/utils/FormatTimestamp";
+
+interface StoryPostProps {
+  innerRef?: Ref<HTMLDivElement>;
+
+  post: Post;
+}
 
 const WORDS_LIMIT = Number(process.env.WORDS_LIMIT) || 100;
 
-const content =
-  "Emma hated mirrors. Ever since she was a child, she felt like they watched her. But in her new apartment, there was one she couldn’t avoid—a large antique mirror nailed into the bathroom wall. It came with the place.\n\nOne night, after brushing her teeth, she looked up and saw her reflection smile. She wasn’t smiling.\n\nFrozen, Emma blinked. The reflection mimicked her again—this time correctly. Shaking her head, she laughed nervously and chalked it up to being tired.\n\nBut the next night, it waved.\n\nEmma ran.\n\nShe covered the mirror with a towel, but the fabric was soaked and on the floor the next morning. Her reflection stood still, smiling, as she backed away in real life.\n\nDesperate, she smashed it.\n\nThe glass shattered—yet the reflection remained, smiling from the frame.\n\nEmma screamed. Her body felt heavy. She looked down, but she wasn’t there. She turned to the mirror.\n\nShe was inside it.\n\nFrom her old world, her doppelgänger stepped out, brushing shards off its shoulders.\n\nNow, Emma watches helplessly from the other side as the thing wears her skin, lives her life, and smiles… every time it passes a mirror.";
-
-const StoryPost = () => {
-  const wordCount = content.trim().length;
+const StoryPost = ({ innerRef, post }: StoryPostProps) => {
+  const wordCount = post.chapterContent.trim().length;
   const [expanded, setExpanded] = useState(false);
   const shouldTruncate = wordCount > WORDS_LIMIT;
 
-  let displayedText = content;
+  let displayedText = post.chapterContent;
 
   if (!expanded && shouldTruncate) {
-    const words = content.match(/\S+\s*/g) || [];
+    const words = post.chapterContent.match(/\S+\s*/g) || [];
     displayedText = words.slice(0, 100).join("") + "... ";
   }
 
   const [starred, setStarred] = useState(false);
 
   return (
-    <div className="bg-card w-full px-5 py-2 rounded-md block space-y-3">
+    <div
+      className="bg-card w-full px-5 py-2 rounded-md block space-y-3"
+      ref={innerRef}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar className="w-[35px] h-[35px]">
             <AvatarImage src={default_avatar.src} alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>
+              {post.userFirstName.charAt(0)}
+              {post.userLastName.charAt(0)}
+            </AvatarFallback>
           </Avatar>
           <div className="flex flex-col justify-center">
             <h1 className="text-sm font-semibold">
               <Link href="#" className="hover:underline">
-                Khang Nguyen
+                {post.userFirstName} {post.userLastName}
               </Link>
             </h1>
-            <span className="text-xs text-muted-foreground">02 April 2025</span>
+            <span className="text-xs text-muted-foreground">
+              {formatTimestamp(post.chapterCreatedTime)}
+            </span>
           </div>
         </div>
 
@@ -55,10 +69,12 @@ const StoryPost = () => {
 
       <div className="w-full block">
         <div className="flex flex-col gap-1">
-          <h2 className="font-bold">Story title</h2>
-          <div className="text-sm font-serif">
-            <span className="text-xl">1: </span>
-            <h3 className="inline">Chapter name</h3>
+          <h2 className="text-2xl font-bold">{post.storyTitle}</h2>
+          <div className="text-lg font-semibold flex items-centers">
+            <div className="bg-rainbow w-7 h-7 rounded-full mr-2 text-xs flex items-center justify-center text-white">
+              {post.chapterNumber}
+            </div>
+            <h3 className="inline">{post.chapterTitle}</h3>
           </div>
         </div>
 
@@ -120,7 +136,7 @@ const StoryPost = () => {
                 <span>Comment</span>
               </div>
             </DialogTrigger>
-            <StoryPostDialog />
+            <StoryPostDialog post={post} />
           </Dialog>
           <div className="flex justify-center items-center py-1 hover:bg-secondary w-full rounded-md hover:cursor-pointer gap-1">
             <Link2 size={15} />
