@@ -28,23 +28,87 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-import Comment from "./Comment";
+import CommentSec from "./CommentSec";
+import { Post } from "@/types/Post";
+import { formatTimestamp } from "@/utils/FormatTimestamp";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { generateApi, GET_COMMENT_PAGED } from "@/constants/api";
+import { delay } from "@/utils/Delay";
+import { Logger } from "@/utils/Logger";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { Comment } from "@/types/Comment";
+import CommentSecSkeleton from "./CommentSecSkeleton";
 
-const mock_content =
-  "Emma hated mirrors. Ever since she was a child, she felt like they watched her. But in her new apartment, there was one she couldn’t avoid—a large antique mirror nailed into the bathroom wall. It came with the place.\n\nOne night, after brushing her teeth, she looked up and saw her reflection smile. She wasn’t smiling.\n\nFrozen, Emma blinked. The reflection mimicked her again—this time correctly. Shaking her head, she laughed nervously and chalked it up to being tired.\n\nBut the next night, it waved.\n\nEmma ran.\n\nShe covered the mirror with a towel, but the fabric was soaked and on the floor the next morning. Her reflection stood still, smiling, as she backed away in real life.\n\nDesperate, she smashed it.\n\nThe glass shattered—yet the reflection remained, smiling from the frame.\n\nEmma screamed. Her body felt heavy. She looked down, but she wasn’t there. She turned to the mirror.\n\nShe was inside it.\n\nFrom her old world, her doppelgänger stepped out, brushing shards off its shoulders.\n\nNow, Emma watches helplessly from the other side as the thing wears her skin, lives her life, and smiles… every time it passes a mirror.";
+interface StoryPostDialogProps {
+  post: Post;
+  openDialog: boolean;
+}
 
-const StoryPostDialog = () => {
+const StoryPostDialog = ({ post, openDialog }: StoryPostDialogProps) => {
   const [starred, setStarred] = useState(false);
 
+  const fetchComments = async ({ pageParam }: { pageParam: number }) => {
+    const token = Cookies.get("token");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    try {
+      const response = await axios.get(
+        generateApi(
+          GET_COMMENT_PAGED,
+          `${post.chapterId}`,
+          `page=${pageParam}&size=10`
+        ),
+        {
+          headers,
+        }
+      );
+
+      // delay for testing
+      await delay();
+
+      return response.data.result;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        Logger.error("Error fetching comments:", "client");
+        throw new Error(`Error fetching comments: ${error.message}`);
+      } else {
+        Logger.error("Unexpected error:", "client");
+        throw new Error("Unexpected error occurred");
+      }
+    }
+  };
+
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useInfiniteQuery({
+      queryKey: [`comments_${post.chapterId}`],
+      queryFn: fetchComments,
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, allPages) => {
+        const nextPage = lastPage.length ? allPages.length : undefined;
+        return nextPage;
+      },
+      enabled: openDialog,
+      staleTime: 1000 * 60 * 5,
+    });
+
+  const comments = data?.pages.map((page) =>
+    page.map((comment: Comment) => {
+      return <CommentSec key={comment.commentId} comment={comment} />;
+    })
+  );
+
   return (
-    <DialogContent className="max-w-[97vw] sm:max-w-[40vw] bg-card px-0 pt-1 rounded-md gap-0">
+    <DialogContent className="max-w-[97vw] sm:max-w-[90vw] lg:max-w-[70vw] xl:max-w-[60vw] 2xl:max-w-[40vw] bg-card px-0 pt-3 rounded-md gap-0">
       <DialogHeader className="border-b border-background px-4 pb-2">
-        <DialogTitle className="text-center text-md">
-          <h1 className="font-bold text-2xl">Story title</h1>
-          <h2 className="font-medium">chapter</h2>
+        <DialogTitle className="text-center text-md flex flex-col">
+          <span className="font-bold text-2xl">{post.storyTitle}</span>
+          <span className="font-medium">{post.chapterTitle}</span>
         </DialogTitle>
         <DialogDescription className="text-center text-muted-foreground text-xs">
-          Posted by Khang Nguyen
+          Posted by {post.userFirstName} {post.userLastName}
         </DialogDescription>
       </DialogHeader>
 
@@ -53,16 +117,19 @@ const StoryPostDialog = () => {
           <div className="flex items-center gap-2">
             <Avatar className="w-[35px] h-[35px]">
               <AvatarImage src={default_avatar.src} alt="@shadcn" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>
+                {post.userFirstName.charAt(0)}
+                {post.userLastName.charAt(0)}
+              </AvatarFallback>
             </Avatar>
             <div className="flex flex-col justify-center">
               <h1 className="text-sm font-semibold">
                 <Link href="#" className="hover:underline">
-                  Khang Nguyen
+                  {post.userFirstName} {post.userLastName}
                 </Link>
               </h1>
               <span className="text-xs text-muted-foreground">
-                02 April 2025
+                {formatTimestamp(post.chapterCreatedTime)}
               </span>
             </div>
           </div>
@@ -77,16 +144,18 @@ const StoryPostDialog = () => {
 
         <div className="w-full block mt-5">
           <div className="flex flex-col gap-1">
-            <h2 className="font-bold">Story title</h2>
-            <div className="text-sm font-serif">
-              <span className="text-xl">1: </span>
-              <h3 className="inline">Chapter name</h3>
+            <h2 className="text-2xl font-bold">{post.storyTitle}</h2>
+            <div className="text-lg font-semibold flex items-centers">
+              <div className="bg-rainbow w-7 h-7 rounded-full mr-2 text-xs flex items-center justify-center text-white">
+                {post.chapterNumber}
+              </div>
+              <h3 className="inline">{post.chapterTitle}</h3>
             </div>
           </div>
 
           <div className="mt-4">
             <div className="text-sm text-justify whitespace-pre-wrap inline">
-              <p className="inline">{mock_content}</p>
+              <p className="inline">{post.chapterContent}</p>
             </div>
           </div>
 
@@ -104,7 +173,9 @@ const StoryPostDialog = () => {
 
               <StarsDialog />
             </Dialog>
-            <div className="text-muted-foreground">0 comments</div>
+            <div className="text-muted-foreground">
+              {post.numberOfComment} comments
+            </div>
           </div>
 
           <div className="grid grid-cols-3 gap-2 mt-4 border-t border-b border-muted-foreground py-1 text-muted-foreground">
@@ -169,8 +240,20 @@ const StoryPostDialog = () => {
             </div>
 
             {/* comment list */}
-            <div className="mt-4 flex flex-col gap-3 pb-5">
-              <Comment />
+            <div className="mt-4 flex flex-col gap-7 pb-5 w-full">
+              {comments}
+              {(isLoading || isFetchingNextPage) && <CommentSecSkeleton />}
+              {hasNextPage && !isLoading && (
+                <button
+                  onClick={() => {
+                    fetchNextPage();
+                  }}
+                  disabled={!hasNextPage || isFetchingNextPage}
+                  className="text-muted-foreground font-bold hover:underline hover:cursor-pointer"
+                >
+                  Show More
+                </button>
+              )}
             </div>
           </div>
         </div>

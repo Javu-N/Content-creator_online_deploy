@@ -5,11 +5,13 @@ import { StarIcon } from "lucide-react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import StarsDialog from "./StarsDialog";
 import Reply from "./Reply";
+import { Comment } from "@/types/Comment";
 
-const mock_anchor_comment =
-  "This is honestly so inspiring.\nI love seeing people chase their dreams and share moments like this — it’s a great reminder to keep pushing forward no matter what.";
+interface CommentSecProps {
+  comment: Comment;
+}
 
-const Comment = () => {
+const CommentSec = ({ comment }: CommentSecProps) => {
   const [showReply, setShowReply] = useState(false);
   const [showReplyBox, setShowReplyBox] = useState(false);
   const replyBoxRef = useRef<HTMLTextAreaElement>(null);
@@ -43,18 +45,20 @@ const Comment = () => {
   return (
     <div className="block">
       {/* Anchor comment */}
-      <div className="flex items-start gap-2">
+      <div className="flex items-start gap-2 w-full ">
         <Avatar className="w-[35px] h-[35px]">
           <AvatarImage src={default_avatar.src} alt="@shadcn" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <div className="flex flex-col">
+        <div className="flex flex-col w-[80%] items-start">
           <div className="px-3 py-1 bg-secondary rounded-md space-y-1">
             <span className="font-bold text-sm">Khang Nguyen</span>
-            <p className="text-sm whitespace-pre-wrap">{mock_anchor_comment}</p>
+            <p className="text-sm whitespace-pre-wrap">
+              {comment.comment_content}
+            </p>
           </div>
 
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-4">
             <div className="text-sm text-muted-foreground flex gap-3">
               <button className="hover:underline" type="button">
                 Star
@@ -86,7 +90,7 @@ const Comment = () => {
             </Dialog>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full">
             <button
               className="text-left text-sm text-muted-foreground font-semibold hover:underline"
               type="button"
@@ -141,4 +145,4 @@ const Comment = () => {
   );
 };
 
-export default Comment;
+export default CommentSec;
