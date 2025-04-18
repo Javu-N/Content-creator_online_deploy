@@ -32,6 +32,7 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
   }
 
   const [starred, setStarred] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   return (
     <div
@@ -108,7 +109,9 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
             <StarsDialog />
           </Dialog>
 
-          <div className="text-muted-foreground">0 comments</div>
+          <div className="text-muted-foreground">
+            {post.numberOfComment} comments
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-2 mt-4 border-t border-t-muted-foreground py-1 text-muted-foreground">
@@ -129,14 +132,14 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
               </>
             )}
           </button>
-          <Dialog>
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
             <DialogTrigger asChild>
               <div className="flex justify-center items-center py-1 hover:bg-secondary w-full rounded-md hover:cursor-pointer gap-1">
                 <MessageCircle size={15} />
                 <span>Comment</span>
               </div>
             </DialogTrigger>
-            <StoryPostDialog post={post} />
+            <StoryPostDialog post={post} openDialog={openDialog} />
           </Dialog>
           <div className="flex justify-center items-center py-1 hover:bg-secondary w-full rounded-md hover:cursor-pointer gap-1">
             <Link2 size={15} />

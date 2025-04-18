@@ -9,4 +9,6 @@ export interface Post {
 
   userFirstName: string;
   userLastName: string;
+
+  numberOfComment: number;
 }
