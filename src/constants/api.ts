@@ -27,3 +27,4 @@ export const GET_LATEST_CHAPTER_PAGED = "/chapter/latest";
 
 // Comment
 export const GET_COMMENT_PAGED = "/comment/chapter";
+export const POST_COMMENT = "/comment/chapter";

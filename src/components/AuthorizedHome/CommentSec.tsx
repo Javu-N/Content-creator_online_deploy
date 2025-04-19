@@ -52,7 +52,9 @@ const CommentSec = ({ comment }: CommentSecProps) => {
         </Avatar>
         <div className="flex flex-col w-[80%] items-start">
           <div className="px-3 py-1 bg-secondary rounded-md space-y-1">
-            <span className="font-bold text-sm">Khang Nguyen</span>
+            <span className="font-bold text-sm">
+              {comment.userFirstName} {comment.userLastName}
+            </span>
             <p className="text-sm whitespace-pre-wrap">
               {comment.comment_content}
             </p>

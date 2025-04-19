@@ -39,6 +39,7 @@ import { Logger } from "@/utils/Logger";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Comment } from "@/types/Comment";
 import CommentSecSkeleton from "./CommentSecSkeleton";
+import CommentInput from "./CommentInput";
 
 interface StoryPostDialogProps {
   post: Post;
@@ -47,6 +48,7 @@ interface StoryPostDialogProps {
 
 const StoryPostDialog = ({ post, openDialog }: StoryPostDialogProps) => {
   const [starred, setStarred] = useState(false);
+  const [addedComment, setAddedComment] = useState<Comment[]>([]);
 
   const fetchComments = async ({ pageParam }: { pageParam: number }) => {
     const token = Cookies.get("token");
@@ -112,7 +114,7 @@ const StoryPostDialog = ({ post, openDialog }: StoryPostDialogProps) => {
         </DialogDescription>
       </DialogHeader>
 
-      <div className="overflow-auto max-h-[70vh] block px-4 scroll-container pt-4">
+      <div className="overflow-auto max-h-[60vh] block px-4 scroll-container pt-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Avatar className="w-[35px] h-[35px]">
@@ -241,6 +243,9 @@ const StoryPostDialog = ({ post, openDialog }: StoryPostDialogProps) => {
 
             {/* comment list */}
             <div className="mt-4 flex flex-col gap-7 pb-5 w-full">
+              {addedComment.map((id) => (
+                <CommentSec key={id.commentId} comment={id} />
+              ))}
               {comments}
               {(isLoading || isFetchingNextPage) && <CommentSecSkeleton />}
               {hasNextPage && !isLoading && (
@@ -259,36 +264,11 @@ const StoryPostDialog = ({ post, openDialog }: StoryPostDialogProps) => {
         </div>
       </div>
 
-      <DialogFooter>
-        <div className="border-t border-background pt-5 px-4 flex w-full gap-2 items-start">
-          <Avatar className="w-[35px] h-[35px]">
-            <AvatarImage src={default_avatar.src} alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-
-          <textarea
-            className="w-full bg-secondary rounded-md px-3 py-1 text-sm resize-none"
-            placeholder="Write a comment..."
-            rows={1}
-            onFocus={(e) => {
-              e.target.rows = 1;
-            }}
-            onBlur={(e) => {
-              e.target.rows = 1;
-            }}
-            onInput={(e) => {
-              const target = e.target as HTMLTextAreaElement;
-              target.style.height = "auto";
-              target.style.height = `${target.scrollHeight}px`;
-            }}
-          ></textarea>
-          <button
-            className="bg-rainbow px-3 py-1 rounded-md active:scale-95 text-xs sm:text-sm"
-            type="button"
-          >
-            Reply
-          </button>
-        </div>
+      <DialogFooter className="">
+        <CommentInput
+          chapterId={post.chapterId}
+          setAddedComment={setAddedComment}
+        />
       </DialogFooter>
     </DialogContent>
   );
