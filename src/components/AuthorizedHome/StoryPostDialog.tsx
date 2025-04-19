@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
   Dialog,
@@ -49,6 +49,16 @@ interface StoryPostDialogProps {
 const StoryPostDialog = ({ post, openDialog }: StoryPostDialogProps) => {
   const [starred, setStarred] = useState(false);
   const [addedComment, setAddedComment] = useState<Comment[]>([]);
+  const latestAddedCommentRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (latestAddedCommentRef.current) {
+      latestAddedCommentRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [addedComment]);
 
   const fetchComments = async ({ pageParam }: { pageParam: number }) => {
     const token = Cookies.get("token");
@@ -243,11 +253,24 @@ const StoryPostDialog = ({ post, openDialog }: StoryPostDialogProps) => {
 
             {/* comment list */}
             <div className="mt-4 flex flex-col gap-7 pb-5 w-full">
-              {addedComment.map((id) => (
-                <CommentSec key={id.commentId} comment={id} />
+              {/* New comment added by user will be shown first. */}
+              {addedComment.map((comment, index) => (
+                <CommentSec
+                  key={comment.commentId}
+                  comment={comment}
+                  lastRef={
+                    index === addedComment.length - 1
+                      ? latestAddedCommentRef
+                      : null
+                  }
+                />
               ))}
+
+              {/* Comment list */}
               {comments}
+
               {(isLoading || isFetchingNextPage) && <CommentSecSkeleton />}
+
               {hasNextPage && !isLoading && (
                 <button
                   onClick={() => {

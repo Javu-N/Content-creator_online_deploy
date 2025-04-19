@@ -25,6 +25,8 @@ const CommentInput = ({ chapterId, setAddedComment }: CommentInputProps) => {
       Authorization: `Bearer ${token}`,
     };
 
+    setText("");
+
     try {
       const response = await axios.post(
         generateApi(POST_COMMENT, chapterId),
@@ -74,7 +76,7 @@ const CommentInput = ({ chapterId, setAddedComment }: CommentInputProps) => {
           console.log("Submitted comment:", comment);
         }}
       >
-        Reply
+        Comment
       </button>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { Ref, useCallback, useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import default_avatar from "$/public/default-avatar.jpeg";
 import { StarIcon } from "lucide-react";
@@ -9,9 +9,10 @@ import { Comment } from "@/types/Comment";
 
 interface CommentSecProps {
   comment: Comment;
+  lastRef?: Ref<HTMLDivElement>;
 }
 
-const CommentSec = ({ comment }: CommentSecProps) => {
+const CommentSec = ({ comment, lastRef }: CommentSecProps) => {
   const [showReply, setShowReply] = useState(false);
   const [showReplyBox, setShowReplyBox] = useState(false);
   const replyBoxRef = useRef<HTMLTextAreaElement>(null);
@@ -43,7 +44,7 @@ const CommentSec = ({ comment }: CommentSecProps) => {
   }, [showReplyBox]);
 
   return (
-    <div className="block">
+    <div className="block" ref={lastRef}>
       {/* Anchor comment */}
       <div className="flex items-start gap-2 w-full ">
         <Avatar className="w-[35px] h-[35px]">
