@@ -4,15 +4,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
 import Link from "next/link";
 import axios from "axios";
-import {
-  REGISTER
-} from "@/constants/api";
+import { REGISTER } from "@/constants/api";
 import { generateApi } from "@/constants/api";
 import GenreSelectionPage from "@/components/Gerne/GenreSelectionPage";
 import {
@@ -22,29 +26,40 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-const FormSchema = z
-  .object({
-    first_name: z.string().min(2, { message: "First name must be at least 2 characters." }),
-    last_name: z.string().min(2, { message: "Last name must be at least 2 characters." }),
-    email: z.string().email({ message: "Invalid email" }),
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters long." })
-      .regex(/[A-Z]/, { message: "Password must include at least one uppercase letter." })
-      .regex(/[a-z]/, { message: "Password must include at least one lowercase letter." })
-      .regex(/[0-9]/, { message: "Password must include at least one number." })
-      .regex(/[@$!%*?&#]/, { message: "Password must include at least one special character." }),
-    gender: z.string(),
-    nationality: z.string(),
-    birthday: z.string(),
-  });
+const FormSchema = z.object({
+  first_name: z
+    .string()
+    .min(2, { message: "First name must be at least 2 characters." }),
+  last_name: z
+    .string()
+    .min(2, { message: "Last name must be at least 2 characters." }),
+  email: z.string().email({ message: "Invalid email" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long." })
+    .regex(/[A-Z]/, {
+      message: "Password must include at least one uppercase letter.",
+    })
+    .regex(/[a-z]/, {
+      message: "Password must include at least one lowercase letter.",
+    })
+    .regex(/[0-9]/, { message: "Password must include at least one number." })
+    .regex(/[@$!%*?&#]/, {
+      message: "Password must include at least one special character.",
+    }),
+  gender: z.string(),
+  nationality: z.string(),
+  birthday: z.string(),
+});
 
 export default function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showGenrePopup, setShowGenrePopup] = useState(false);
-  const [formData, setFormData] = useState<z.infer<typeof FormSchema> | null>(null);
+  const [formData, setFormData] = useState<z.infer<typeof FormSchema> | null>(
+    null
+  );
   const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -71,6 +86,7 @@ export default function Register() {
       const validatedData = FormSchema.parse(data);
       setFormData(validatedData);
       setShowGenrePopup(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setErrorMessage(error.message || "An error occurred.");
     } finally {
@@ -90,7 +106,7 @@ export default function Register() {
         gender: formData.gender,
         nationality: formData.nationality,
         birthday: formData.birthday,
-        genreIds: genres || []
+        genreIds: genres || [],
       });
 
       console.log("Request body:", {
@@ -101,17 +117,17 @@ export default function Register() {
         gender: formData.gender,
         nationality: formData.nationality,
         birthday: formData.birthday,
-        genreIds: genres || []
+        genreIds: genres || [],
       });
 
       setSuccessMessage("User registered successfully!");
       console.log("Response:", response.data);
-      
+
       setTimeout(() => {
         setShowGenrePopup(false);
-        router.push('onboarding/genres');
+        router.push("onboarding/genres");
       }, 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error details:", error.response?.data);
       setErrorMessage(error.response?.data?.message || "An error occurred.");
     }
@@ -163,10 +179,17 @@ export default function Register() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="Email" {...field} autoComplete="email" />
+                    <Input
+                      type="email"
+                      placeholder="Email"
+                      {...field}
+                      autoComplete="email"
+                    />
                   </FormControl>
                   {form.formState.errors.email && (
-                    <p className="text-red-500">{form.formState.errors.email.message}</p>
+                    <p className="text-red-500">
+                      {form.formState.errors.email.message}
+                    </p>
                   )}
                 </FormItem>
               )}
@@ -179,7 +202,12 @@ export default function Register() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Password" {...field} autoComplete="Current-password"/>
+                    <Input
+                      type="password"
+                      placeholder="Password"
+                      {...field}
+                      autoComplete="Current-password"
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -192,10 +220,7 @@ export default function Register() {
                 <FormItem>
                   <FormLabel>Gender</FormLabel>
                   <FormControl>
-                    <select
-                      className="w-full p-2 border rounded"
-                      {...field}
-                    >
+                    <select className="w-full p-2 border rounded" {...field}>
                       <option value="">Select gender</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
@@ -203,7 +228,9 @@ export default function Register() {
                     </select>
                   </FormControl>
                   {form.formState.errors.gender && (
-                    <p className="text-red-500">{form.formState.errors.gender.message}</p>
+                    <p className="text-red-500">
+                      {form.formState.errors.gender.message}
+                    </p>
                   )}
                 </FormItem>
               )}
@@ -236,7 +263,9 @@ export default function Register() {
             />
 
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-            {successMessage && <p className="text-green-500">{successMessage}</p>}
+            {successMessage && (
+              <p className="text-green-500">{successMessage}</p>
+            )}
 
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Validating..." : "Continue"}
@@ -262,7 +291,7 @@ export default function Register() {
               {successMessage}
             </div>
           )}
-          <GenreSelectionPage 
+          <GenreSelectionPage
             onComplete={handleGenreSelectionComplete}
             onBack={() => setShowGenrePopup(false)}
             initialSelectedGenres={selectedGenres}

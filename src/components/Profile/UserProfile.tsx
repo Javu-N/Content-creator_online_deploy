@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import Cookies from 'js-cookie'
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import Cookies from "js-cookie";
 
 interface ApiUserData {
   id: string;
@@ -48,23 +48,24 @@ export default function UserProfile() {
   const fetchUserProfile = async () => {
     try {
       setIsLoading(true);
-      const token = Cookies.get('token');
-      console.log("Token:", token); // Log token để kiểm tra
-  
-      if (!token) { 
-        throw new Error('Token not found');
+      const token = Cookies.get("token");
+
+      if (!token) {
+        throw new Error("Token not found");
       }
-  
+
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
-      const response = await fetch('http://localhost:8080/user/profile', { headers });
-  
+      const response = await fetch("http://localhost:8080/user/profile", {
+        headers,
+      });
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data: ApiResponse = await response.json();
-  
+
       if (data.status === 200) {
         setProfileData({
           ...data.result,
@@ -72,14 +73,14 @@ export default function UserProfile() {
           location: "San Francisco, CA",
           socialLinks: [
             { platform: "Twitter", url: "twitter.com/user" },
-            { platform: "GitHub", url: "github.com/user" }
-          ]
+            { platform: "GitHub", url: "github.com/user" },
+          ],
         });
       } else {
-        throw new Error('Failed to fetch profile data');
+        throw new Error("Failed to fetch profile data");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       console.error(err); // Log lỗi để kiểm tra
     } finally {
       setIsLoading(false);
@@ -87,15 +88,27 @@ export default function UserProfile() {
   };
 
   if (isLoading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
-}
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        Loading...
+      </div>
+    );
+  }
 
   if (error) {
-    return <div className="flex justify-center items-center min-h-screen text-red-500">{error}</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen text-red-500">
+        {error}
+      </div>
+    );
   }
 
   if (!profileData) {
-    return <div className="flex justify-center items-center min-h-screen">No profile data available</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        No profile data available
+      </div>
+    );
   }
 
   const getInitials = () => {
@@ -103,10 +116,10 @@ export default function UserProfile() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -119,7 +132,9 @@ export default function UserProfile() {
       <div className="relative px-4 pb-4">
         <div className="absolute -top-16 left-4">
           <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
-            <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${getInitials()}`} />
+            <AvatarImage
+              src={`https://api.dicebear.com/7.x/initials/svg?seed=${getInitials()}`}
+            />
             <AvatarFallback>{getInitials()}</AvatarFallback>
           </Avatar>
         </div>
@@ -127,13 +142,12 @@ export default function UserProfile() {
         <div className="ml-36 pt-4 flex justify-between items-start">
           <div>
             <h1 className="text-2xl font-bold">{`${profileData.firstName} ${profileData.lastName}`}</h1>
-            <p className="text-gray-600 dark:text-gray-400">{profileData.email}</p>
+            <p className="text-gray-600 dark:text-gray-400">
+              {profileData.email}
+            </p>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            {isEditing ? 'Save Profile' : 'Edit Profile'}
+          <Button variant="outline" onClick={() => setIsEditing(!isEditing)}>
+            {isEditing ? "Save Profile" : "Edit Profile"}
           </Button>
         </div>
       </div>
@@ -154,29 +168,43 @@ export default function UserProfile() {
                   {isEditing ? (
                     <Textarea
                       value={profileData.bio}
-                      onChange={(e) => setProfileData(prev => prev ? {...prev, bio: e.target.value} : prev)}
+                      onChange={(e) =>
+                        setProfileData((prev) =>
+                          prev ? { ...prev, bio: e.target.value } : prev
+                        )
+                      }
                       className="w-full"
                     />
                   ) : (
-                    <p className="text-gray-600 dark:text-gray-400">{profileData.bio}</p>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {profileData.bio}
+                    </p>
                   )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500">Email</h3>
+                    <h3 className="text-sm font-semibold text-gray-500">
+                      Email
+                    </h3>
                     <p>{profileData.email}</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500">Birthday</h3>
+                    <h3 className="text-sm font-semibold text-gray-500">
+                      Birthday
+                    </h3>
                     <p>{formatDate(profileData.birthday)}</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500">Nationality</h3>
+                    <h3 className="text-sm font-semibold text-gray-500">
+                      Nationality
+                    </h3>
                     <p>{profileData.nationality}</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500">Gender</h3>
+                    <h3 className="text-sm font-semibold text-gray-500">
+                      Gender
+                    </h3>
                     <p>{profileData.gender}</p>
                   </div>
                 </div>
@@ -185,8 +213,16 @@ export default function UserProfile() {
                   <h3 className="text-lg font-semibold mb-2">Social Links</h3>
                   <div className="flex gap-2 flex-wrap">
                     {profileData.socialLinks.map((link, index) => (
-                      <Badge key={index} variant="secondary" className="hover:bg-secondary/80">
-                        <a href={`https://${link.url}`} target="_blank" rel="noopener noreferrer">
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="hover:bg-secondary/80"
+                      >
+                        <a
+                          href={`https://${link.url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           {link.platform}
                         </a>
                       </Badge>
@@ -202,15 +238,23 @@ export default function UserProfile() {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500">Account Status</h3>
-                    <Badge variant={profileData.active ? "default" : "destructive"}>
-                      {profileData.active ? 'Active' : 'Inactive'}
+                    <h3 className="text-sm font-semibold text-gray-500">
+                      Account Status
+                    </h3>
+                    <Badge
+                      variant={profileData.active ? "default" : "destructive"}
+                    >
+                      {profileData.active ? "Active" : "Inactive"}
                     </Badge>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500">Role</h3>
-                    <Badge variant={profileData.admin ? "default" : "secondary"}>
-                      {profileData.admin ? 'Admin' : 'User'}
+                    <h3 className="text-sm font-semibold text-gray-500">
+                      Role
+                    </h3>
+                    <Badge
+                      variant={profileData.admin ? "default" : "secondary"}
+                    >
+                      {profileData.admin ? "Admin" : "User"}
                     </Badge>
                   </div>
                 </div>
@@ -223,14 +267,21 @@ export default function UserProfile() {
               <h3 className="text-lg font-semibold mb-4">Profile Settings</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Email Notifications</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Email Notifications
+                  </label>
                   <div className="flex items-center space-x-2">
-                    <input type="checkbox" className="rounded border-gray-300" />
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300"
+                    />
                     <span>Receive email notifications</span>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Profile Visibility</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Profile Visibility
+                  </label>
                   <select className="w-full rounded-md border border-gray-300 p-2">
                     <option>Public</option>
                     <option>Private</option>
