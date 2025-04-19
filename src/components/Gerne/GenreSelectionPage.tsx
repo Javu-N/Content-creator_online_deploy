@@ -6,13 +6,31 @@ import { Genre, ApiResponse } from './genre'
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Check } from "lucide-react"
+import axios from "axios"
+import { generateApi, GET_ALL_GENRES } from "@/constants/api"
 
-export default function GenreSelectionPage() {
-  const [selectedGenres, setSelectedGenres] = useState<number[]>([])
+interface GenreSelectionPageProps {
+  onComplete: (genres: number[]) => void;
+  onBack: () => void;
+  initialSelectedGenres: number[];
+  onGenresChange: (genres: number[]) => void;
+}
+
+export default function GenreSelectionPage({ 
+  onComplete, 
+  onBack, 
+  initialSelectedGenres,
+  onGenresChange 
+}: GenreSelectionPageProps) {
+  const [selectedGenres, setSelectedGenres] = useState<number[]>(initialSelectedGenres);
   const [genres, setGenres] = useState<Genre[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+
+  useEffect(() => {
+    setSelectedGenres(initialSelectedGenres);
+  }, [initialSelectedGenres]);
 
   useEffect(() => {
     fetchGenres()
@@ -21,18 +39,13 @@ export default function GenreSelectionPage() {
   const fetchGenres = async () => {
     try {
       setLoading(true)
-      const response = await fetch('http://localhost:8080/genre/all')
+      const response = await axios.get(generateApi(GET_ALL_GENRES))
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch genres')
-      }
-
-      const data: ApiResponse = await response.json()
-      if (data.status === 200) {
-        setGenres(data.result)
+      if (response.data.status === 200) {
+        setGenres(response.data.result)
       } else {
         throw new Error('Failed to fetch genres')
-    }
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch genres')
     } finally {
@@ -41,33 +54,17 @@ export default function GenreSelectionPage() {
   }
 
   const toggleGenre = (genreId: number) => {
-    setSelectedGenres(prev => 
-      prev.includes(genreId)
-        ? prev.filter(id => id !== genreId)
-        : [...prev, genreId]
-    )
+    const newSelectedGenres = selectedGenres.includes(genreId)
+      ? selectedGenres.filter(id => id !== genreId)
+      : [...selectedGenres, genreId];
+    
+    setSelectedGenres(newSelectedGenres);
+    onGenresChange(newSelectedGenres);
   }
 
   const handleSubmit = async () => {
-    if (selectedGenres.length === 0) {
-      setError('Please select at least one genre')
-      return
-    }
-
     try {
-      const response = await fetch('/api/user/genres', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ genres: selectedGenres }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to save genre preferences')
-      }
-
-      router.push('/home')
+      onComplete(selectedGenres);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save genre preferences')
     }
@@ -197,26 +194,34 @@ export default function GenreSelectionPage() {
         <p className="text-sm text-muted-foreground">
           {selectedGenres.length} genre{selectedGenres.length !== 1 ? 's' : ''} selected
         </p>
-        <Button 
-          onClick={handleSubmit}
-          disabled={selectedGenres.length === 0}
-          className={`
-            px-8 
-            py-2 
-            min-w-[200px] 
-            bg-gradient-to-r 
-            from-purple-500 
-            to-pink-500 
-            hover:from-purple-600 
-            hover:to-pink-600 
-            text-white
-            transition-all
-            duration-300
-            ${selectedGenres.length > 0 ? 'scale-105' : 'scale-100'}
-          `}
-        >
-          Continue
-        </Button>
+        <div className="flex gap-4">
+          <Button 
+            onClick={onBack}
+            variant="outline"
+            className="px-8 py-2 min-w-[200px]"
+          >
+            Back
+          </Button>
+          <Button 
+            onClick={handleSubmit}
+            className={`
+              px-8 
+              py-2 
+              min-w-[200px] 
+              bg-gradient-to-r 
+              from-purple-500 
+              to-pink-500 
+              hover:from-purple-600 
+              hover:to-pink-600 
+              text-white
+              transition-all
+              duration-300
+              ${selectedGenres.length > 0 ? 'scale-105' : 'scale-100'}
+            `}
+          >
+            Continue
+          </Button>
+        </div>
       </div>
     </div>
   )

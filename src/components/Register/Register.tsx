@@ -8,6 +8,19 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
+import Link from "next/link";
+import axios from "axios";
+import {
+  REGISTER
+} from "@/constants/api";
+import { generateApi } from "@/constants/api";
+import GenreSelectionPage from "@/components/Gerne/GenreSelectionPage";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const FormSchema = z
   .object({
@@ -30,6 +43,9 @@ export default function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showGenrePopup, setShowGenrePopup] = useState(false);
+  const [formData, setFormData] = useState<z.infer<typeof FormSchema> | null>(null);
+  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -51,36 +67,53 @@ export default function Register() {
     setSuccessMessage(null);
 
     try {
-      const response = await fetch("http://localhost:8080/user/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-          firstName: data.first_name,
-          lastName: data.last_name,
-          gender: data.gender,
-          nationality: data.nationality,
-          birthday: data.birthday,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to register user.");
-      }
-
-      const responseData = await response.json();
-      setSuccessMessage("User registered successfully!");
-      console.log("Response:", responseData);
-
-      router.push('onboarding/genres');
+      // Validate form data
+      const validatedData = FormSchema.parse(data);
+      setFormData(validatedData);
+      setShowGenrePopup(true);
     } catch (error: any) {
       setErrorMessage(error.message || "An error occurred.");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleGenreSelectionComplete = async (genres: number[]) => {
+    if (!formData) return;
+
+    try {
+      const response = await axios.post(generateApi(REGISTER), {
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.first_name,
+        lastName: formData.last_name,
+        gender: formData.gender,
+        nationality: formData.nationality,
+        birthday: formData.birthday,
+        genreIds: genres || []
+      });
+
+      console.log("Request body:", {
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.first_name,
+        lastName: formData.last_name,
+        gender: formData.gender,
+        nationality: formData.nationality,
+        birthday: formData.birthday,
+        genreIds: genres || []
+      });
+
+      setSuccessMessage("User registered successfully!");
+      console.log("Response:", response.data);
+      
+      setTimeout(() => {
+        setShowGenrePopup(false);
+        router.push('onboarding/genres');
+      }, 2000);
+    } catch (error: any) {
+      console.error("Error details:", error.response?.data);
+      setErrorMessage(error.response?.data?.message || "An error occurred.");
     }
   };
 
@@ -130,8 +163,11 @@ export default function Register() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="Email" {...field} />
+                    <Input type="email" placeholder="Email" {...field} autoComplete="email" />
                   </FormControl>
+                  {form.formState.errors.email && (
+                    <p className="text-red-500">{form.formState.errors.email.message}</p>
+                  )}
                 </FormItem>
               )}
             />
@@ -143,7 +179,7 @@ export default function Register() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
+                    <Input type="password" placeholder="Password" {...field} autoComplete="Current-password"/>
                   </FormControl>
                 </FormItem>
               )}
@@ -156,8 +192,19 @@ export default function Register() {
                 <FormItem>
                   <FormLabel>Gender</FormLabel>
                   <FormControl>
-                    <Input placeholder="Gender" {...field} />
+                    <select
+                      className="w-full p-2 border rounded"
+                      {...field}
+                    >
+                      <option value="">Select gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
                   </FormControl>
+                  {form.formState.errors.gender && (
+                    <p className="text-red-500">{form.formState.errors.gender.message}</p>
+                  )}
                 </FormItem>
               )}
             />
@@ -192,11 +239,37 @@ export default function Register() {
             {successMessage && <p className="text-green-500">{successMessage}</p>}
 
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Submit"}
+              {isSubmitting ? "Validating..." : "Continue"}
             </Button>
+
+            <div className="text-center mt-4">
+              Already have an account?{" "}
+              <Link href="/login" className="text-primary hover:underline">
+                Login here
+              </Link>
+            </div>
           </form>
         </Form>
       </section>
+
+      <Dialog open={showGenrePopup} onOpenChange={setShowGenrePopup}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Select Your Favorite Genres</DialogTitle>
+          </DialogHeader>
+          {successMessage && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+              {successMessage}
+            </div>
+          )}
+          <GenreSelectionPage 
+            onComplete={handleGenreSelectionComplete}
+            onBack={() => setShowGenrePopup(false)}
+            initialSelectedGenres={selectedGenres}
+            onGenresChange={setSelectedGenres}
+          />
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
