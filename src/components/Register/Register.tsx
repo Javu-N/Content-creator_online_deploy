@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,68 +10,58 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  // FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useRouter } from "@/i18n/routing";
+import Link from "next/link";
+import axios from "axios";
+import { REGISTER } from "@/constants/api";
+import { generateApi } from "@/constants/api";
+import GenreSelectionPage from "@/components/Gerne/GenreSelectionPage";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
-const FormSchema = z
-  .object({
-    first_name: z.string().min(2, {
-      message: "First name must be at least 2 characters.",
+const FormSchema = z.object({
+  first_name: z
+    .string()
+    .min(2, { message: "First name must be at least 2 characters." }),
+  last_name: z
+    .string()
+    .min(2, { message: "Last name must be at least 2 characters." }),
+  email: z.string().email({ message: "Invalid email" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long." })
+    .regex(/[A-Z]/, {
+      message: "Password must include at least one uppercase letter.",
+    })
+    .regex(/[a-z]/, {
+      message: "Password must include at least one lowercase letter.",
+    })
+    .regex(/[0-9]/, { message: "Password must include at least one number." })
+    .regex(/[@$!%*?&#]/, {
+      message: "Password must include at least one special character.",
     }),
-    last_name: z.string().min(2, {
-      message: "Last name must be at least 2 characters.",
-    }),
-    email: z.string().email({
-      message: "Invalid email",
-    }),
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters long." }) // Minimum length
-      .max(20, { message: "Password must not exceed 20 characters." }) // Maximum length
-      .regex(/[A-Z]/, {
-        message: "Password must include at least one uppercase letter.",
-      }) // At least one uppercase letter
-      .regex(/[a-z]/, {
-        message: "Password must include at least one lowercase letter.",
-      }) // At least one lowercase letter
-      .regex(/[0-9]/, { message: "Password must include at least one number." }) // At least one number
-      .regex(/[@$!%*?&#]/, {
-        message:
-          "Password must include at least one special character (@, $, !, %, *, ?, &, #).",
-      }),
-    re_password: z.string(),
-    gender: z.string(),
-    language: z.string({
-      required_error: "Please select a language.",
-    }),
-    birthday: z.date({
-      required_error: "A date of birth is required.",
-    }),
-    day: z.string(),
-    month: z.string(),
-    year: z.string(),
-  })
-  .refine((data) => data.password === data.re_password, {
-    message: "Passwords must match.",
-    path: ["re_password"], // Highlight the re_password field in case of an error
-  });
-
-const languages = [
-  { label: "English", value: "en" },
-  { label: "Vietnamese", value: "vn" },
-] as const;
+  gender: z.string(),
+  nationality: z.string(),
+  birthday: z.string(),
+});
 
 export default function Register() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showGenrePopup, setShowGenrePopup] = useState(false);
+  const [formData, setFormData] = useState<z.infer<typeof FormSchema> | null>(
+    null
+  );
+  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -80,32 +69,81 @@ export default function Register() {
       last_name: "",
       email: "",
       password: "",
-      re_password: "",
       gender: "",
-      language: "",
-      day: "",
-      month: "",
-      year: "",
+      nationality: "",
+      birthday: "",
     },
   });
 
-  //   function onSubmit(data: z.infer<typeof FormSchema>) {
-  //     toast({
-  //       title: "You submitted the following values:",
-  //       description: (
-  //         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-  //           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-  //         </pre>
-  //       ),
-  //     });
-  //   }
+  const router = useRouter();
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsSubmitting(true);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    try {
+      // Validate form data
+      const validatedData = FormSchema.parse(data);
+      setFormData(validatedData);
+      setShowGenrePopup(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setErrorMessage(error.message || "An error occurred.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGenreSelectionComplete = async (genres: number[]) => {
+    if (!formData) return;
+
+    try {
+      const response = await axios.post(generateApi(REGISTER), {
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.first_name,
+        lastName: formData.last_name,
+        gender: formData.gender,
+        nationality: formData.nationality,
+        birthday: formData.birthday,
+        genreIds: genres || [],
+      });
+
+      console.log("Request body:", {
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.first_name,
+        lastName: formData.last_name,
+        gender: formData.gender,
+        nationality: formData.nationality,
+        birthday: formData.birthday,
+        genreIds: genres || [],
+      });
+
+      setSuccessMessage("User registered successfully!");
+      console.log("Response:", response.data);
+
+      setTimeout(() => {
+        setShowGenrePopup(false);
+        router.push("onboarding/genres");
+      }, 2000);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error("Error details:", error.response?.data);
+        setErrorMessage(error.response?.data?.message || "An error occurred.");
+      } else {
+        console.error("Unexpected error:", error);
+        setErrorMessage("An unexpected error occurred.");
+      }
+    }
+  };
 
   return (
     <main>
       <section className="min-h-screen flex items-center justify-center">
         <Form {...form}>
           <form
-            // onSubmit={}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="bg-card rounded-2xl p-5 md:p-10 gap-3 flex flex-col mx-[30px] sm:mx-0"
           >
             <div>
@@ -113,188 +151,26 @@ export default function Register() {
             </div>
 
             <div className="flex gap-3 w-full">
-              {/* First name & last name */}
               <FormField
                 control={form.control}
                 name="first_name"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel className="hidden">First name</FormLabel>
+                    <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="first name" {...field} />
+                      <Input placeholder="First Name" {...field} />
                     </FormControl>
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="last_name"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel className="hidden">Second name</FormLabel>
+                    <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="last name" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 w-full">
-              {/* Gender & Nationality */}
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem className="sm:w-1/2">
-                    <FormLabel className="hidden">Gender</FormLabel>
-                    <FormControl>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder="Select Your Gender"
-                            {...field}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Gender</SelectLabel>
-                            <SelectItem value="Male">Male</SelectItem>
-                            <SelectItem value="Female">Female</SelectItem>
-                            <SelectItem value="Others">Others</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="language"
-                render={({ field }) => (
-                  <FormItem className="sm:w-1/2">
-                    <FormLabel className="hidden">Language</FormLabel>
-                    <FormControl>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder="Select Your Language"
-                            {...field}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Language</SelectLabel>
-                            {languages.map((Language) => {
-                              return (
-                                <SelectItem
-                                  key={Language.value}
-                                  value={Language.value}
-                                >
-                                  {Language.label}
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="flex gap-3 w-full">
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem className="w-1/3">
-                    <FormLabel className="hidden">Month</FormLabel>
-                    <FormControl>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Month" {...field} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Month</SelectLabel>
-                            {Array.from({ length: 12 }, (_, i) => (
-                              <SelectItem
-                                key={i + 1}
-                                value={(i + 1).toString()}
-                              >
-                                {new Date(0, i).toLocaleString("default", {
-                                  month: "short",
-                                })}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem className="w-1/3">
-                    <FormLabel className="hidden">Day</FormLabel>
-                    <FormControl>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Day" {...field} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Day</SelectLabel>
-                            {Array.from({ length: 31 }, (_, i) => (
-                              <SelectItem
-                                key={i + 1}
-                                value={(i + 1).toString()}
-                              >
-                                {i + 1}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem className="w-1/3">
-                    <FormLabel className="hidden">Year</FormLabel>
-                    <FormControl>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Year" {...field} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Year</SelectLabel>
-                            {Array.from({ length: 2050 - 1945 + 1 }, (_, i) => (
-                              <SelectItem
-                                key={1945 + i}
-                                value={(1945 + i).toString()}
-                              >
-                                {1945 + i}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                      <Input placeholder="Last Name" {...field} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -305,15 +181,21 @@ export default function Register() {
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel className="hidden">Email</FormLabel>
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder="Email"
                       {...field}
+                      autoComplete="email"
                     />
                   </FormControl>
+                  {form.formState.errors.email && (
+                    <p className="text-red-500">
+                      {form.formState.errors.email.message}
+                    </p>
+                  )}
                 </FormItem>
               )}
             />
@@ -322,40 +204,106 @@ export default function Register() {
               control={form.control}
               name="password"
               render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel className="hidden">Password</FormLabel>
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder="Password"
                       {...field}
+                      autoComplete="Current-password"
                     />
                   </FormControl>
                 </FormItem>
               )}
             />
-            <div className="max-w-[500px] mx-auto block text-xs">
-              <p className="mb-5">
-                People who use our service may have uploaded your contact
-                information to StoriVerse. Learn more.
-              </p>
-              <p>
-                By clicking Sign Up, you agree to our Terms, Privacy Policy and
-                Cookies Policy. You may receive SMS notifications from us and
-                can opt out at any time.
-              </p>
-            </div>
-            <div className="flex flex-col m-auto w-1/2">
-              <Button
-                className="w-full hover:scale-110 duration-300"
-                type="submit"
-              >
-                Submit
-              </Button>
+
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+                  <FormControl>
+                    <select className="w-full p-2 border rounded" {...field}>
+                      <option value="">Select gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </FormControl>
+                  {form.formState.errors.gender && (
+                    <p className="text-red-500">
+                      {form.formState.errors.gender.message}
+                    </p>
+                  )}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="nationality"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nationality</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nationality" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="birthday"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Birthday</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            {successMessage && (
+              <p className="text-green-500">{successMessage}</p>
+            )}
+
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Validating..." : "Continue"}
+            </Button>
+
+            <div className="text-center mt-4">
+              Already have an account?{" "}
+              <Link href="/login" className="text-primary hover:underline">
+                Login here
+              </Link>
             </div>
           </form>
         </Form>
       </section>
+
+      <Dialog open={showGenrePopup} onOpenChange={setShowGenrePopup}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Select Your Favorite Genres</DialogTitle>
+          </DialogHeader>
+          {successMessage && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+              {successMessage}
+            </div>
+          )}
+          <GenreSelectionPage
+            onComplete={handleGenreSelectionComplete}
+            onBack={() => setShowGenrePopup(false)}
+            initialSelectedGenres={selectedGenres}
+            onGenresChange={setSelectedGenres}
+          />
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }

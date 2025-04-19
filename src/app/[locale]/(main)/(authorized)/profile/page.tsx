@@ -1,7 +1,8 @@
+import UserProfile from "@/components/Profile/UserProfile";
 import React from "react";
 
 const ProfilePage = () => {
-  return <div className="pt-[80px]">Profile</div>;
+  return <UserProfile/>
 };
 
 export default ProfilePage;

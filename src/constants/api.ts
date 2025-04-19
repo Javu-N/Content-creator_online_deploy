@@ -25,6 +25,9 @@ export const UPDATE_STORY_GENRE = "/story/updateGenre";
 export const CREATE_NEW_CHAPTER_STORY = "/chapter/new";
 export const GET_LATEST_CHAPTER_PAGED = "/chapter/latest";
 
+// User
+export const REGISTER = "/user/register";
+
 // Comment
 export const GET_COMMENT_PAGED = "/comment/chapter";
 export const POST_COMMENT = "/comment/chapter";
