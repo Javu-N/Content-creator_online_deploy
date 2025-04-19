@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   Dialog,
@@ -44,11 +44,19 @@ import CommentInput from "./CommentInput";
 interface StoryPostDialogProps {
   post: Post;
   openDialog: boolean;
+  setTotalComment: React.Dispatch<React.SetStateAction<number>>;
+  totalComment: number;
 }
 
-const StoryPostDialog = ({ post, openDialog }: StoryPostDialogProps) => {
+const StoryPostDialog = ({
+  post,
+  openDialog,
+  setTotalComment,
+  totalComment,
+}: StoryPostDialogProps) => {
   const [starred, setStarred] = useState(false);
   const [addedComment, setAddedComment] = useState<Comment[]>([]);
+
   const latestAddedCommentRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -186,7 +194,7 @@ const StoryPostDialog = ({ post, openDialog }: StoryPostDialogProps) => {
               <StarsDialog />
             </Dialog>
             <div className="text-muted-foreground">
-              {post.numberOfComment} comments
+              {totalComment || 0} comments
             </div>
           </div>
 
@@ -291,6 +299,7 @@ const StoryPostDialog = ({ post, openDialog }: StoryPostDialogProps) => {
         <CommentInput
           chapterId={post.chapterId}
           setAddedComment={setAddedComment}
+          setTotalComment={setTotalComment}
         />
       </DialogFooter>
     </DialogContent>

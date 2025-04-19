@@ -10,8 +10,13 @@ import { Comment } from "@/types/Comment";
 interface CommentInputProps {
   chapterId: string;
   setAddedComment?: React.Dispatch<React.SetStateAction<Comment[]>>;
+  setTotalComment?: React.Dispatch<React.SetStateAction<number>>;
 }
-const CommentInput = ({ chapterId, setAddedComment }: CommentInputProps) => {
+const CommentInput = ({
+  chapterId,
+  setAddedComment,
+  setTotalComment,
+}: CommentInputProps) => {
   const [text, setText] = useState("");
   const [comment] = useDebounce(text, 1000);
 
@@ -43,6 +48,10 @@ const CommentInput = ({ chapterId, setAddedComment }: CommentInputProps) => {
       console.log("Comment created:", response.data);
       if (setAddedComment) {
         setAddedComment((prev) => [...prev, response.data.result]);
+      }
+
+      if (setTotalComment) {
+        setTotalComment((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Error creating comment:", error);

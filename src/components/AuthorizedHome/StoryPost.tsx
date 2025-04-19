@@ -23,6 +23,9 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
   const wordCount = post.chapterContent.trim().length;
   const [expanded, setExpanded] = useState(false);
   const shouldTruncate = wordCount > WORDS_LIMIT;
+  const [totalComment, setTotalComment] = useState<number>(
+    post.numberOfComment
+  );
 
   let displayedText = post.chapterContent;
 
@@ -82,7 +85,7 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
         <div className="mt-4">
           <div className="text-sm text-justify whitespace-pre-wrap inline">
             <p className="inline">{displayedText}</p>
-            {!expanded && (
+            {!expanded && shouldTruncate && (
               <button
                 className="font-bold hover:underline inline"
                 type="button"
@@ -110,7 +113,7 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
           </Dialog>
 
           <div className="text-muted-foreground">
-            {post.numberOfComment} comments
+            {totalComment || 0} comments
           </div>
         </div>
 
@@ -139,7 +142,12 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
                 <span>Comment</span>
               </div>
             </DialogTrigger>
-            <StoryPostDialog post={post} openDialog={openDialog} />
+            <StoryPostDialog
+              post={post}
+              openDialog={openDialog}
+              setTotalComment={setTotalComment}
+              totalComment={totalComment}
+            />
           </Dialog>
           <div className="flex justify-center items-center py-1 hover:bg-secondary w-full rounded-md hover:cursor-pointer gap-1">
             <Link2 size={15} />
