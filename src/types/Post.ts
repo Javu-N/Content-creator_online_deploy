@@ -9,4 +9,7 @@ export interface Post {
 
   userFirstName: string;
   userLastName: string;
+  userAvatarUrl: string;
+
+  numberOfComment: number;
 }

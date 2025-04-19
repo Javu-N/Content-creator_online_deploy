@@ -1,7 +1,7 @@
 "use client";
 import { Ref, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import default_avatar from "$/public/default-avatar.jpeg";
+
 import { Link } from "@/i18n/routing";
 import { CircleEllipsis, Link2, MessageCircle, StarIcon } from "lucide-react";
 import { Dialog, DialogTrigger } from "../ui/dialog";
@@ -23,6 +23,9 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
   const wordCount = post.chapterContent.trim().length;
   const [expanded, setExpanded] = useState(false);
   const shouldTruncate = wordCount > WORDS_LIMIT;
+  const [totalComment, setTotalComment] = useState<number>(
+    post.numberOfComment
+  );
 
   let displayedText = post.chapterContent;
 
@@ -32,6 +35,7 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
   }
 
   const [starred, setStarred] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   return (
     <div
@@ -41,7 +45,7 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar className="w-[35px] h-[35px]">
-            <AvatarImage src={default_avatar.src} alt="@shadcn" />
+            <AvatarImage src={post.userAvatarUrl} alt="@shadcn" />
             <AvatarFallback>
               {post.userFirstName.charAt(0)}
               {post.userLastName.charAt(0)}
@@ -81,7 +85,7 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
         <div className="mt-4">
           <div className="text-sm text-justify whitespace-pre-wrap inline">
             <p className="inline">{displayedText}</p>
-            {!expanded && (
+            {!expanded && shouldTruncate && (
               <button
                 className="font-bold hover:underline inline"
                 type="button"
@@ -108,7 +112,9 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
             <StarsDialog />
           </Dialog>
 
-          <div className="text-muted-foreground">0 comments</div>
+          <div className="text-muted-foreground">
+            {totalComment || 0} comments
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-2 mt-4 border-t border-t-muted-foreground py-1 text-muted-foreground">
@@ -129,14 +135,19 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
               </>
             )}
           </button>
-          <Dialog>
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
             <DialogTrigger asChild>
               <div className="flex justify-center items-center py-1 hover:bg-secondary w-full rounded-md hover:cursor-pointer gap-1">
                 <MessageCircle size={15} />
                 <span>Comment</span>
               </div>
             </DialogTrigger>
-            <StoryPostDialog post={post} />
+            <StoryPostDialog
+              post={post}
+              openDialog={openDialog}
+              setTotalComment={setTotalComment}
+              totalComment={totalComment}
+            />
           </Dialog>
           <div className="flex justify-center items-center py-1 hover:bg-secondary w-full rounded-md hover:cursor-pointer gap-1">
             <Link2 size={15} />

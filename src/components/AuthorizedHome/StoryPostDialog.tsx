@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   Dialog,
@@ -28,30 +28,111 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-import Comment from "./Comment";
+import CommentSec from "./CommentSec";
 import { Post } from "@/types/Post";
 import { formatTimestamp } from "@/utils/FormatTimestamp";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { generateApi, GET_COMMENT_PAGED } from "@/constants/api";
+import { delay } from "@/utils/Delay";
+import { Logger } from "@/utils/Logger";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { Comment } from "@/types/Comment";
+import CommentSecSkeleton from "./CommentSecSkeleton";
+import CommentInput from "./CommentInput";
 
 interface StoryPostDialogProps {
   post: Post;
+  openDialog: boolean;
+  setTotalComment: React.Dispatch<React.SetStateAction<number>>;
+  totalComment: number;
 }
 
-const StoryPostDialog = ({ post }: StoryPostDialogProps) => {
+const StoryPostDialog = ({
+  post,
+  openDialog,
+  setTotalComment,
+  totalComment,
+}: StoryPostDialogProps) => {
   const [starred, setStarred] = useState(false);
+  const [addedComment, setAddedComment] = useState<Comment[]>([]);
+
+  const latestAddedCommentRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (latestAddedCommentRef.current) {
+      latestAddedCommentRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [addedComment]);
+
+  const fetchComments = async ({ pageParam }: { pageParam: number }) => {
+    const token = Cookies.get("token");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    try {
+      const response = await axios.get(
+        generateApi(
+          GET_COMMENT_PAGED,
+          `${post.chapterId}`,
+          `page=${pageParam}&size=10`
+        ),
+        {
+          headers,
+        }
+      );
+
+      // delay for testing
+      await delay();
+
+      return response.data.result;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        Logger.error("Error fetching comments:", "client");
+        throw new Error(`Error fetching comments: ${error.message}`);
+      } else {
+        Logger.error("Unexpected error:", "client");
+        throw new Error("Unexpected error occurred");
+      }
+    }
+  };
+
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useInfiniteQuery({
+      queryKey: [`comments_${post.chapterId}`],
+      queryFn: fetchComments,
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, allPages) => {
+        const nextPage = lastPage.length ? allPages.length : undefined;
+        return nextPage;
+      },
+      enabled: openDialog,
+      staleTime: 1000 * 60 * 5,
+    });
+
+  const comments = data?.pages.map((page) =>
+    page.map((comment: Comment) => {
+      return <CommentSec key={comment.commentId} comment={comment} />;
+    })
+  );
 
   return (
-    <DialogContent className="max-w-[97vw] sm:max-w-[40vw] bg-card px-0 pt-1 rounded-md gap-0">
+    <DialogContent className="max-w-[97vw] sm:max-w-[90vw] lg:max-w-[70vw] xl:max-w-[60vw] 2xl:max-w-[40vw] bg-card px-0 pt-3 rounded-md gap-0">
       <DialogHeader className="border-b border-background px-4 pb-2">
-        <DialogTitle className="text-center text-md">
-          <h1 className="font-bold text-2xl">{post.storyTitle}</h1>
-          <h2 className="font-medium">{post.chapterTitle}</h2>
+        <DialogTitle className="text-center text-md flex flex-col">
+          <span className="font-bold text-2xl">{post.storyTitle}</span>
+          <span className="font-medium">{post.chapterTitle}</span>
         </DialogTitle>
         <DialogDescription className="text-center text-muted-foreground text-xs">
           Posted by {post.userFirstName} {post.userLastName}
         </DialogDescription>
       </DialogHeader>
 
-      <div className="overflow-auto max-h-[70vh] block px-4 scroll-container pt-4">
+      <div className="overflow-auto max-h-[60vh] block px-4 scroll-container pt-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Avatar className="w-[35px] h-[35px]">
@@ -112,7 +193,9 @@ const StoryPostDialog = ({ post }: StoryPostDialogProps) => {
 
               <StarsDialog />
             </Dialog>
-            <div className="text-muted-foreground">0 comments</div>
+            <div className="text-muted-foreground">
+              {totalComment || 0} comments
+            </div>
           </div>
 
           <div className="grid grid-cols-3 gap-2 mt-4 border-t border-b border-muted-foreground py-1 text-muted-foreground">
@@ -177,43 +260,47 @@ const StoryPostDialog = ({ post }: StoryPostDialogProps) => {
             </div>
 
             {/* comment list */}
-            <div className="mt-4 flex flex-col gap-3 pb-5">
-              <Comment />
+            <div className="mt-4 flex flex-col gap-7 pb-5 w-full">
+              {/* New comment added by user will be shown first. */}
+              {addedComment.map((comment, index) => (
+                <CommentSec
+                  key={comment.commentId}
+                  comment={comment}
+                  lastRef={
+                    index === addedComment.length - 1
+                      ? latestAddedCommentRef
+                      : null
+                  }
+                />
+              ))}
+
+              {/* Comment list */}
+              {comments}
+
+              {(isLoading || isFetchingNextPage) && <CommentSecSkeleton />}
+
+              {hasNextPage && !isLoading && (
+                <button
+                  onClick={() => {
+                    fetchNextPage();
+                  }}
+                  disabled={!hasNextPage || isFetchingNextPage}
+                  className="text-muted-foreground font-bold hover:underline hover:cursor-pointer"
+                >
+                  Show More
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      <DialogFooter>
-        <div className="border-t border-background pt-5 px-4 flex w-full gap-2 items-start">
-          <Avatar className="w-[35px] h-[35px]">
-            <AvatarImage src={default_avatar.src} alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-
-          <textarea
-            className="w-full bg-secondary rounded-md px-3 py-1 text-sm resize-none"
-            placeholder="Write a comment..."
-            rows={1}
-            onFocus={(e) => {
-              e.target.rows = 1;
-            }}
-            onBlur={(e) => {
-              e.target.rows = 1;
-            }}
-            onInput={(e) => {
-              const target = e.target as HTMLTextAreaElement;
-              target.style.height = "auto";
-              target.style.height = `${target.scrollHeight}px`;
-            }}
-          ></textarea>
-          <button
-            className="bg-rainbow px-3 py-1 rounded-md active:scale-95 text-xs sm:text-sm"
-            type="button"
-          >
-            Reply
-          </button>
-        </div>
+      <DialogFooter className="">
+        <CommentInput
+          chapterId={post.chapterId}
+          setAddedComment={setAddedComment}
+          setTotalComment={setTotalComment}
+        />
       </DialogFooter>
     </DialogContent>
   );

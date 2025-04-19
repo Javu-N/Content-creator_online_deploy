@@ -180,7 +180,7 @@ const PostInput = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div
+        <button
           className="w-full bg-card flex justify-between px-5 py-2 rounded-md items-center hover: cursor-text"
           onClick={() => setErrorMessage("")}
         >
@@ -193,10 +193,10 @@ const PostInput = () => {
               Tell your story... Khang
             </span>
           </div>
-          <button className="bg-background px-3 py-1 rounded-md active:scale-95 text-xs sm:text-sm">
+          <span className="bg-background px-3 py-1 rounded-md active:scale-95 text-xs sm:text-sm">
             Quick Post
-          </button>
-        </div>
+          </span>
+        </button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[500px] bg-card px-0 pt-3 rounded-md">
