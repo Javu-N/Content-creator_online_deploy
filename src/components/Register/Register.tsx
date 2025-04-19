@@ -128,8 +128,13 @@ export default function Register() {
         router.push("onboarding/genres");
       }, 2000);
     } catch (error: unknown) {
-      console.error("Error details:", error.response?.data);
-      setErrorMessage(error.response?.data?.message || "An error occurred.");
+      if (axios.isAxiosError(error)) {
+        console.error("Error details:", error.response?.data);
+        setErrorMessage(error.response?.data?.message || "An error occurred.");
+      } else {
+        console.error("Unexpected error:", error);
+        setErrorMessage("An unexpected error occurred.");
+      }
     }
   };
 

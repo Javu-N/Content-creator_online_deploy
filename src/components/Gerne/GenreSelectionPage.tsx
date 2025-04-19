@@ -1,13 +1,12 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Genre, ApiResponse } from './genre'
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Check } from "lucide-react"
-import axios from "axios"
-import { generateApi, GET_ALL_GENRES } from "@/constants/api"
+import { useState, useEffect } from "react";
+import { Genre } from "./genre";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Check } from "lucide-react";
+import axios from "axios";
+import { generateApi, GET_ALL_GENRES } from "@/constants/api";
 
 interface GenreSelectionPageProps {
   onComplete: (genres: number[]) => void;
@@ -16,102 +15,107 @@ interface GenreSelectionPageProps {
   onGenresChange: (genres: number[]) => void;
 }
 
-export default function GenreSelectionPage({ 
-  onComplete, 
-  onBack, 
+export default function GenreSelectionPage({
+  onComplete,
+  onBack,
   initialSelectedGenres,
-  onGenresChange 
+  onGenresChange,
 }: GenreSelectionPageProps) {
-  const [selectedGenres, setSelectedGenres] = useState<number[]>(initialSelectedGenres);
-  const [genres, setGenres] = useState<Genre[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
+  const [selectedGenres, setSelectedGenres] = useState<number[]>(
+    initialSelectedGenres
+  );
+  const [genres, setGenres] = useState<Genre[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setSelectedGenres(initialSelectedGenres);
   }, [initialSelectedGenres]);
 
   useEffect(() => {
-    fetchGenres()
-  }, [])
+    fetchGenres();
+  }, []);
 
   const fetchGenres = async () => {
     try {
-      setLoading(true)
-      const response = await axios.get(generateApi(GET_ALL_GENRES))
-      
+      setLoading(true);
+      const response = await axios.get(generateApi(GET_ALL_GENRES));
+
       if (response.data.status === 200) {
-        setGenres(response.data.result)
+        setGenres(response.data.result);
       } else {
-        throw new Error('Failed to fetch genres')
+        throw new Error("Failed to fetch genres");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch genres')
+      setError(err instanceof Error ? err.message : "Failed to fetch genres");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const toggleGenre = (genreId: number) => {
     const newSelectedGenres = selectedGenres.includes(genreId)
-      ? selectedGenres.filter(id => id !== genreId)
+      ? selectedGenres.filter((id) => id !== genreId)
       : [...selectedGenres, genreId];
-    
+
     setSelectedGenres(newSelectedGenres);
     onGenresChange(newSelectedGenres);
-  }
+  };
 
   const handleSubmit = async () => {
     try {
       onComplete(selectedGenres);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save genre preferences')
+      setError(
+        err instanceof Error ? err.message : "Failed to save genre preferences"
+      );
     }
-  }
+  };
 
   const getRainbowStyle = (index: number) => {
-    const hue = (index * 20) % 360
+    const hue = (index * 20) % 360;
     return {
       background: `linear-gradient(135deg, 
         hsl(${hue}, 70%, 60%) 0%,
         hsl(${(hue + 30) % 360}, 70%, 60%) 100%
       )`,
-}
-  }
+    };
+  };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
-    )
+    );
   }
 
   if (error) {
-  return (
+    return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <p className="text-red-500 mb-4">{error}</p>
         <Button onClick={fetchGenres}>Retry</Button>
       </div>
-  )
-}
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">Select Your Favorite Genres</h1>
-      
+      <h1 className="text-3xl font-bold mb-8 text-center">
+        Select Your Favorite Genres
+      </h1>
+
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-      
+
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {genres.map((genre, index) => {
           const isSelected = selectedGenres.includes(genre.genreId);
           return (
-            <Card 
-            key={genre.genreId}
-            style={getRainbowStyle(index)}
-            onClick={() => toggleGenre(genre.genreId)}
-            className={`
+            <Card
+              key={genre.genreId}
+              style={getRainbowStyle(index)}
+              onClick={() => toggleGenre(genre.genreId)}
+              className={`
                 group
                 relative
                 p-4 
@@ -121,24 +125,29 @@ export default function GenreSelectionPage({
                 border-2
                 hover:shadow-xl
                 overflow-hidden
-                ${isSelected 
-                  ? 'border-white scale-105 shadow-lg' 
-                  : 'border-transparent hover:border-white/30 hover:scale-102'
-              }
+                ${
+                  isSelected
+                    ? "border-white scale-105 shadow-lg"
+                    : "border-transparent hover:border-white/30 hover:scale-102"
+                }
             `}
-          >
-              <div className={`
+            >
+              <div
+                className={`
                 absolute 
                 inset-0 
                 transition-opacity 
                 duration-300
-                ${isSelected 
-                  ? 'bg-black/20' 
-                  : 'bg-black/0 group-hover:bg-black/10'
+                ${
+                  isSelected
+                    ? "bg-black/20"
+                    : "bg-black/0 group-hover:bg-black/10"
                 }
-              `} />
+              `}
+              />
 
-              <div className={`
+              <div
+                className={`
                 absolute 
                 top-2 
                 right-2 
@@ -147,27 +156,32 @@ export default function GenreSelectionPage({
                 p-0.5
                 transition-all 
                 duration-300
-                ${isSelected 
-                  ? 'opacity-100 scale-100' 
-                  : 'opacity-0 scale-50'
-                }
-              `}>
+                ${isSelected ? "opacity-100 scale-100" : "opacity-0 scale-50"}
+              `}
+              >
                 <Check className="w-4 h-4 text-primary" />
               </div>
 
-              <h3 className={`
+              <h3
+                className={`
                 font-semibold 
                 text-center 
                 text-white
                 text-shadow
                 transition-transform
                 duration-300
-                ${isSelected ? 'transform translate-y-0' : 'group-hover:transform group-hover:-translate-y-1'}
-              `}>
+                ${
+                  isSelected
+                    ? "transform translate-y-0"
+                    : "group-hover:transform group-hover:-translate-y-1"
+                }
+              `}
+              >
                 {genre.genreName}
               </h3>
 
-              <div className={`
+              <div
+                className={`
                 absolute 
                 bottom-2 
                 left-1/2 
@@ -178,31 +192,34 @@ export default function GenreSelectionPage({
                 font-medium
                 transition-all
                 duration-300
-                ${isSelected 
-                  ? 'opacity-100 translate-y-0' 
-                  : 'opacity-0 translate-y-4'
+                ${
+                  isSelected
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-4"
                 }
-              `}>
+              `}
+              >
                 Selected
-      </div>
+              </div>
             </Card>
-  )
+          );
         })}
       </div>
 
       <div className="mt-8 flex flex-col items-center gap-2">
         <p className="text-sm text-muted-foreground">
-          {selectedGenres.length} genre{selectedGenres.length !== 1 ? 's' : ''} selected
+          {selectedGenres.length} genre{selectedGenres.length !== 1 ? "s" : ""}{" "}
+          selected
         </p>
         <div className="flex gap-4">
-          <Button 
+          <Button
             onClick={onBack}
             variant="outline"
             className="px-8 py-2 min-w-[200px]"
           >
             Back
           </Button>
-          <Button 
+          <Button
             onClick={handleSubmit}
             className={`
               px-8 
@@ -216,7 +233,7 @@ export default function GenreSelectionPage({
               text-white
               transition-all
               duration-300
-              ${selectedGenres.length > 0 ? 'scale-105' : 'scale-100'}
+              ${selectedGenres.length > 0 ? "scale-105" : "scale-100"}
             `}
           >
             Continue
@@ -224,5 +241,5 @@ export default function GenreSelectionPage({
         </div>
       </div>
     </div>
-  )
+  );
 }
