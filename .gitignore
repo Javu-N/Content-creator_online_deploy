@@ -15,6 +15,7 @@
 
 # uploads
 /uploads
+/public/uploads
 
 # next.js
 /.next/

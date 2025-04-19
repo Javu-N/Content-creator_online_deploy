@@ -42,7 +42,7 @@ export const POST = async (request: Request) => {
   }
   try {
     // Create uploads directory if it doesn't exist
-    const uploadsDir = path.join(process.cwd(), "uploads");
+    const uploadsDir = path.join(process.cwd(), "public/uploads");
     try {
       await mkdir(uploadsDir, { recursive: true });
     } catch (error) {
