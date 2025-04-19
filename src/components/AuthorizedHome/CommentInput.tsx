@@ -20,12 +20,17 @@ const CommentInput = ({ chapterId, setAddedComment }: CommentInputProps) => {
   };
 
   const createComment = async () => {
+    if (!comment) {
+      return;
+    }
     const token = Cookies.get("token");
     const headers = {
       Authorization: `Bearer ${token}`,
     };
 
     setText("");
+
+    console.log("Submitted comment:", comment);
 
     try {
       const response = await axios.post(
@@ -71,10 +76,7 @@ const CommentInput = ({ chapterId, setAddedComment }: CommentInputProps) => {
       <button
         className="bg-rainbow px-3 py-1 rounded-md active:scale-95 text-xs sm:text-sm"
         type="button"
-        onClick={() => {
-          createComment();
-          console.log("Submitted comment:", comment);
-        }}
+        onClick={createComment}
       >
         Comment
       </button>
