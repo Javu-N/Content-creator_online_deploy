@@ -10,11 +10,18 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Input } from "@/components/ui/input";
-import { MoonIcon, SearchIcon, SquarePen, SunIcon } from "lucide-react";
+import {
+  MoonIcon,
+  SearchIcon,
+  SquarePen,
+  SquarePlus,
+  SunIcon,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import ProfileMenu from "./ProfileMenu";
 import NotificationMenu from "./NotificationMenu";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 const components: { title: string }[] = [
   {
@@ -148,11 +155,26 @@ export const AuthorizedHeader = () => {
             </div>
           </div>
           <div className="flex gap-5 items-center">
-            <button className="flex gap-2 items-center">
-              <span>Write</span>
-              <SquarePen size={18} className="block sm:hidden" />
-              <SquarePen className="hidden sm:block" />
-            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="flex gap-2 items-center">
+                  <span>Write</span>
+                  <SquarePen size={18} className="block sm:hidden" />
+                  <SquarePen className="hidden sm:block" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="bg-card max-w-[200px]">
+                <ul className="flex flex-col text-xs sm:text-sm gap-4">
+                  <li className="flex gap-2 items-center hover:underline">
+                    <SquarePlus />
+                    <Link href="/mystory/new">Write a Story</Link>
+                  </li>
+                  <li className="flex gap-2 items-center hover:underline">
+                    <Link href="/#">My Stories</Link>
+                  </li>
+                </ul>
+              </PopoverContent>
+            </Popover>
             {mounted && (
               <button
                 onClick={handleThemeChange}
