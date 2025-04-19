@@ -1,7 +1,7 @@
 "use client";
 import { Ref, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import default_avatar from "$/public/default-avatar.jpeg";
+
 import { Link } from "@/i18n/routing";
 import { CircleEllipsis, Link2, MessageCircle, StarIcon } from "lucide-react";
 import { Dialog, DialogTrigger } from "../ui/dialog";
@@ -42,7 +42,7 @@ const StoryPost = ({ innerRef, post }: StoryPostProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar className="w-[35px] h-[35px]">
-            <AvatarImage src={default_avatar.src} alt="@shadcn" />
+            <AvatarImage src={post.userAvatarUrl} alt="@shadcn" />
             <AvatarFallback>
               {post.userFirstName.charAt(0)}
               {post.userLastName.charAt(0)}
