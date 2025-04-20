@@ -170,7 +170,7 @@ export const AuthorizedHeader = () => {
                     <Link href="/mystory/new">Write a Story</Link>
                   </li>
                   <li className="flex gap-2 items-center hover:underline">
-                    <Link href="/#">My Stories</Link>
+                    <Link href="/mystory/manage">My Stories</Link>
                   </li>
                 </ul>
               </PopoverContent>
