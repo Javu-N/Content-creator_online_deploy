@@ -1,0 +1,254 @@
+"use client";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import GenreSelect from "@/components/MyStory/new/GenreSelect";
+import { Genre } from "@/types/Genre";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { generateApi, GET_ALL_GENRES } from "@/constants/api";
+import { ImageIcon, Sparkles } from "lucide-react";
+import {
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Tooltip } from "@radix-ui/react-tooltip";
+
+const MyStoryNew = () => {
+  const [storyTitle, setStoryTitle] = useState("Your Story Title");
+  const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
+  const [genreList, setGenreList] = useState<Genre[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadGenreError, setLoadGenreError] = useState(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  // const [uploadFile, setUploadFile] = useState<File | null>(null);
+
+  const triggerUploadFile = () => {
+    fileInputRef?.current?.click();
+  };
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      if (previewImage) {
+        URL.revokeObjectURL(previewImage);
+      }
+
+      // setUploadFile(file);
+
+      const objectURL = URL.createObjectURL(file);
+      setPreviewImage(objectURL);
+    }
+  };
+
+  const deletePreviewImage = (): void => {
+    if (previewImage) {
+      URL.revokeObjectURL(previewImage);
+      setPreviewImage(null);
+      fileInputRef.current!.value = "";
+    }
+  };
+
+  const getAllGenre = async () => {
+    const token = Cookies.get("token");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    await axios
+      .get(generateApi(GET_ALL_GENRES), { headers })
+      .then((response) => {
+        setGenreList(response.data.result);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoadGenreError(error);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    getAllGenre();
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center mb-[50px] pt-[100px] h-screen">
+      <div className="h-10 rounded-md bg-rainbow px-3">
+        <h1 className="text-4xl font-bold text-white">
+          {storyTitle || "Untitled Story"}
+        </h1>
+      </div>
+      <div className="mt-7 flex flex-col gap-4 xl:gap-0 xl:flex-row w-[95vw] xl:w-[80vw] justify-center items-start">
+        <div className="w-full xl:w-[40%] flex flex-col items-center justify-center">
+          {previewImage ? (
+            <div className="relative">
+              <Image
+                src={previewImage}
+                alt="CoverImage"
+                height={300}
+                width={200}
+                className="bg-card rounded-md h-[320px] w-[400px]"
+              />
+              <button
+                onClick={deletePreviewImage}
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center text-xs hover:bg-red-400"
+              >
+                ✕
+              </button>
+            </div>
+          ) : (
+            <button
+              className="bg-card rounded-md h-[320px] w-[400px] flex items-center justify-center"
+              onClick={triggerUploadFile}
+            >
+              <ImageIcon size={32} className="text-muted-foreground" />
+            </button>
+          )}
+
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <button
+              className="flex px-3 py-1 bg-foreground text-background rounded-md active:scale-95"
+              onClick={triggerUploadFile}
+            >
+              Upload File
+            </button>
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    className="flex px-3 py-1 bg-rainbow opacity-80 active:scale-95 rounded-md relative"
+                    disabled
+                  >
+                    <span>Generate With AI</span>
+                    <Sparkles
+                      fill="yellow"
+                      color="yellow"
+                      className="absolute -top-2 -right-3"
+                    />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Generate your cover with our AI</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
+        <div className="bg-card w-full xl:w-[80%] px-8 py-4 rounded-md flex flex-col items-start gap-4">
+          <div className="flex flex-col w-full gap-1">
+            <label htmlFor="storyTitle" className="text-lg font-bold">
+              Story Title
+            </label>
+            <input
+              type="text"
+              id="storyTitle"
+              value={storyTitle}
+              onChange={(e) => setStoryTitle(e.target.value)}
+              placeholder="Enter your story title"
+              className="border border-gray-300 rounded p-2"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-1">
+            <label htmlFor="storyContent" className="text-lg font-bold">
+              Story Description
+            </label>
+            <textarea
+              id="storyContent"
+              rows={10}
+              className="border border-gray-300 rounded p-2"
+              placeholder="Write your story here..."
+            ></textarea>
+          </div>
+
+          <div className="flex flex-col w-full gap-1">
+            <label htmlFor="storyContent" className="text-lg font-bold">
+              Story Genre
+            </label>
+
+            {/* display chosen genres */}
+            <div className="flex flex-col gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                {selectedGenres.map((genre) => (
+                  <div
+                    key={genre.genreId}
+                    className="bg-rainbow rounded-md px-1 py-1 flex items-center justify-center relative"
+                  >
+                    {/* X Button */}
+                    <button
+                      onClick={() =>
+                        setSelectedGenres((prev) =>
+                          prev.filter((g) => g.genreId !== genre.genreId)
+                        )
+                      }
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center text-xs hover:bg-red-400"
+                    >
+                      ✕
+                    </button>
+
+                    <div className="w-full h-full bg-secondary rounded-md flex items-center justify-center py-2">
+                      <span className="text-xs sm:text-sm font-mono font-semibold">
+                        {genre.genreName}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="bg-foreground text-background rounded-md w-[150px] py-1 active:scale-95">
+                    Select Genre
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="bg-card md:min-w-[700px]">
+                  <DialogHeader className="hidden">
+                    <DialogTitle>Choose Genre</DialogTitle>
+                    <DialogDescription>
+                      Select the genre of your story from the list below.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <GenreSelect
+                    selectedGenres={selectedGenres}
+                    setSelectedGenres={setSelectedGenres}
+                    genreList={genreList}
+                    loading={loading}
+                    loadGenreError={loadGenreError}
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+
+          <div className="flex flex-row-reverse w-full gap-3">
+            <button className="bg-rainbow w-[100px] py-1 rounded mt-4">
+              Save Story
+            </button>
+            <button className="bg-muted-foreground text-background w-[100px] py-1 rounded mt-4">
+              Skip
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MyStoryNew;
