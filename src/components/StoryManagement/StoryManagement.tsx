@@ -92,7 +92,7 @@ export default function ManageUserStoryList() {
                 },
             });
             const data = res.data;
-            setPosts((prev) => [...prev, ...data]);
+            setPosts(data);
         } catch (err) {
             console.error("Error fetching posts:", err);
         } finally {
