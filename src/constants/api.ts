@@ -20,6 +20,7 @@ export const GET_ALL_GENRES = "/genre/all";
 // Story
 export const CREATE_STORY = "/story";
 export const UPDATE_STORY_GENRE = "/story/updateGenre";
+export const GET_STORY_BY_USERID = "/story/post";
 
 // Chapter
 export const CREATE_NEW_CHAPTER_STORY = "/chapter/new";
@@ -27,6 +28,7 @@ export const GET_LATEST_CHAPTER_PAGED = "/chapter/latest";
 
 // User
 export const REGISTER = "/user/register";
+export const GET_USER = "/user/profile";
 
 // Comment
 export const GET_COMMENT_PAGED = "/comment/chapter";
