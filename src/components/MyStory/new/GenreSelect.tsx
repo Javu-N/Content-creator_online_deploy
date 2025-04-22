@@ -30,10 +30,6 @@ const GenreSelect = ({
 
   return (
     <div className="flex flex-col gap-3 ">
-      <div className="px-4 flex justify-center">
-        <span className="font-mono text-sm">Choose some genres (Optional)</span>
-      </div>
-
       {loadGenreError && (
         <div className="flex justify-center items-center">
           <span className="text-red-500">Loading Genre Got Error</span>
@@ -66,7 +62,7 @@ const GenreSelect = ({
                   className="hidden"
                 />
 
-                <span className="text-xs sm:text-sm font-mono font-semibold">
+                <span className="text-xs sm:text-sm font-semibold">
                   {genre.genreName}
                 </span>
               </label>
@@ -74,17 +70,6 @@ const GenreSelect = ({
           })}
         </div>
       )}
-
-      <div
-        className="
-      relative 
-      after:absolute 
-      after:bottom-0 
-      after:left-0 
-      after:w-full 
-      after:h-[0.1px] 
-      after:bg-[#303233]"
-      ></div>
     </div>
   );
 };
