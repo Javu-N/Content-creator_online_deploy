@@ -1,38 +1,21 @@
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import { generateApi, GET_ALL_GENRES } from "@/constants/api";
-import axios from "axios";
+import { Genre } from "@/types/Genre";
 
-type Genre = {
-  genreId: number;
-  genreName: string;
-};
+interface GenreSelectProps {
+  genreList: Genre[] | null;
+  loading: boolean;
+  loadGenreError: boolean | null;
+  selectedGenres: Genre[];
+  setSelectedGenres: React.Dispatch<React.SetStateAction<Genre[]>>;
+}
 
-const GenreSelect = () => {
-  const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadGenreError, setLoadGenreError] = useState(null);
-  const [genreList, setGenreList] = useState<Genre[] | null>(null);
-
-  const getAllGenre = async () => {
-    const token = Cookies.get("token");
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
-
-    await axios
-      .get(generateApi(GET_ALL_GENRES), { headers })
-      .then((response) => {
-        setGenreList(response.data.result);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoadGenreError(error);
-        setLoading(false);
-      });
-  };
-
+const GenreSelect = ({
+  selectedGenres,
+  setSelectedGenres,
+  genreList,
+  loading,
+  loadGenreError,
+}: GenreSelectProps) => {
   const toggleGenre = (genre: Genre) => {
     if (!selectedGenres.includes(genre)) {
       const updatedSelectedGenres = [...selectedGenres, genre];
@@ -45,16 +28,8 @@ const GenreSelect = () => {
     }
   };
 
-  useEffect(() => {
-    getAllGenre();
-  }, []);
-
   return (
     <div className="flex flex-col gap-3 ">
-      <div className="px-4 flex justify-center">
-        <span className="font-mono text-sm">Choose some genres (Optional)</span>
-      </div>
-
       {loadGenreError && (
         <div className="flex justify-center items-center">
           <span className="text-red-500">Loading Genre Got Error</span>
@@ -87,7 +62,7 @@ const GenreSelect = () => {
                   className="hidden"
                 />
 
-                <span className="text-xs sm:text-sm font-mono font-semibold">
+                <span className="text-xs sm:text-sm font-semibold">
                   {genre.genreName}
                 </span>
               </label>
@@ -95,26 +70,6 @@ const GenreSelect = () => {
           })}
         </div>
       )}
-
-      <div
-        className="
-      relative 
-      after:absolute 
-      after:bottom-0 
-      after:left-0 
-      after:w-full 
-      after:h-[0.1px] 
-      after:bg-[#303233]"
-      ></div>
-
-      <div className="px-4 flex gap-2 items-center font-semibold">
-        <button
-          className="w-full px-3 py-2 bg-rainbow rounded-md active:scale-95"
-          type="button"
-        >
-          Post
-        </button>
-      </div>
     </div>
   );
 };
