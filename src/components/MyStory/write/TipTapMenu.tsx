@@ -1,4 +1,11 @@
 import { Editor } from '@tiptap/react';
+import {
+  BoldIcon,
+  HighlighterIcon,
+  ItalicIcon,
+  StrikethroughIcon,
+  UnderlineIcon,
+} from 'lucide-react';
 import React from 'react';
 
 interface TipTapMenuProps {
@@ -15,26 +22,53 @@ const TipTapMenu = ({ editor }: TipTapMenuProps) => {
       <button
         onClick={() => editor.chain().focus().toggleBold().run()}
         className={`${
-          editor.isActive('bold') ? 'bg-muted-foreground' : ''
-        } rounded-md p-2 hover:bg-muted-foreground`}
+          editor.isActive('bold') ? 'bg-secondary' : ''
+        } rounded-md p-1 hover:bg-secondary`}
       >
-        Bold
+        <BoldIcon className="w-5 h-5" strokeWidth={3} />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleItalic().run()}
         className={`${
-          editor.isActive('italic') ? 'bg-muted-foreground' : ''
-        } rounded-md p-2 hover:bg-muted-foreground`}
+          editor.isActive('italic') ? 'bg-secondary' : ''
+        } rounded-md p-1 hover:bg-secondary`}
       >
-        Italic
+        <ItalicIcon className="w-5 h-5" strokeWidth={1} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleUnderline().run()}
+        className={`${
+          editor.isActive('underline') ? 'bg-secondary' : ''
+        } rounded-md p-1 hover:bg-secondary`}
+      >
+        <UnderlineIcon className="w-5 h-5" strokeWidth={1} />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleStrike().run()}
         className={`${
-          editor.isActive('underline') ? 'bg-muted-foreground' : ''
-        } rounded-md p-2 hover:bg-muted-foreground`}
+          editor.isActive('strike') ? 'bg-secondary' : ''
+        } rounded-md p-1 hover:bg-secondary`}
       >
-        Underline
+        <StrikethroughIcon className="w-5 h-5" strokeWidth={1} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleHighlight().run()}
+        className={`${
+          editor.isActive('highlight') ? 'bg-secondary' : ''
+        } rounded-md p-1 hover:bg-secondary`}
+      >
+        <HighlighterIcon
+          className="w-5 h-5 text-foreground"
+          strokeWidth={2}
+          fill="orange"
+        />
+      </button>
+
+      <button
+        onClick={() => editor.commands.unsetAllMarks()}
+        className="hover:bg-secondary p-1 rounded-md text-sm"
+      >
+        unset all
       </button>
     </div>
   );

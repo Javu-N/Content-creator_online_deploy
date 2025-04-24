@@ -1,28 +1,43 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { ChevronDown, PlusCircleIcon } from 'lucide-react';
+import { ChevronDown, PlusCircleIcon, TypeOutlineIcon } from 'lucide-react';
 import TipTapMenu from './TipTapMenu';
 import ChapterOption from './ChapterOption';
 import StarterKit from '@tiptap/starter-kit';
 import { useEditor } from '@tiptap/react';
 import EditorContentInput from './EditorContentInput';
 import { Placeholder } from '@tiptap/extension-placeholder';
+import Underline from '@tiptap/extension-underline';
+import Highlight from '@tiptap/extension-highlight';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
+import { Slider } from '@/components/ui/slider';
 
 const Write = () => {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Underline,
+      Highlight,
       Placeholder.configure({
         placeholder: 'Write your chapter here...',
       }),
     ],
+    immediatelyRender: false,
+    shouldRerenderOnTransaction: true,
     editorProps: {
       attributes: {
         class:
@@ -30,6 +45,23 @@ const Write = () => {
       },
     },
   });
+  const [textSize, setTextSize] = useState(12);
+  const [isMounted, setIsMounted] = useState(false);
+
+  const blurEditor = () => {
+    // Find the editor's content DOM element
+    (document.activeElement as HTMLElement)?.blur();
+    const el = document.querySelector('.ProseMirror');
+    if (el instanceof HTMLElement) {
+      el.blur();
+    }
+  };
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted || !editor) return null;
 
   return (
     <div className="pt-[70px] flex flex-col items-center">
@@ -78,17 +110,53 @@ const Write = () => {
         </div>
       </div>
 
-      <div className="mt-[135px] md:mt-[85px] fixed z-10">
+      <div className="mt-[135px] md:mt-[85px] fixed z-10 flex justify-center gap-2 items-center">
         <TipTapMenu editor={editor} />
+
+        <Drawer>
+          <DrawerTrigger asChild>
+            <button
+              className="bg-secondary py-1 px-2 rounded-xl flex gap-1 items-center active:scale-95"
+              onClick={blurEditor}
+            >
+              <span>Resize</span>
+              <TypeOutlineIcon className="w-4 h-4" strokeWidth={1} />
+            </button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <div className="mx-auto w-full max-w-sm h-[25vh]">
+              <DrawerHeader className="flex flex-col items-center">
+                <DrawerTitle>Modify text size</DrawerTitle>
+                <DrawerDescription>Ranging from 12px to 24px</DrawerDescription>
+              </DrawerHeader>
+
+              <div className="flex flex-col items-center justify-center gap-5">
+                <h1 className="text-6xl font-bold">
+                  {textSize}
+                  <span className="text-3xl">px</span>
+                </h1>
+                <Slider
+                  defaultValue={[12]}
+                  min={12}
+                  max={24}
+                  step={1}
+                  className="w-[60%]"
+                  onValueChange={([val]) => setTextSize(val)}
+                  value={[textSize]}
+                />
+              </div>
+            </div>
+          </DrawerContent>
+        </Drawer>
       </div>
 
-      <div className="mt-[195px] md:mt-[150px]">
+      <div className="mt-[195px] md:mt-[135px]">
         <input
           className="bg-card w-[95vw] px-4 py-4 text-center focus:outline-none text-xl border-b-[0.5px] border-b-background rounded-t-md placeholder:text-muted-foreground"
           type="text"
           placeholder="Type your chapter name"
         />
-        <EditorContentInput editor={editor} />
+        <EditorContentInput editor={editor} textSize={textSize} />
       </div>
     </div>
   );
