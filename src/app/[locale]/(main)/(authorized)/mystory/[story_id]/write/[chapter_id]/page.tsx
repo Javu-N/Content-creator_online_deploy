@@ -1,9 +1,5 @@
-import React from 'react'
+import Write from '@/components/MyStory/write/Write';
 
-const page = () => {
-  return (
-    <div className='pt-[100px]'>Write page</div>
-  )
-}
+const WritePage = () => <Write />;
 
-export default page
+export default WritePage;
