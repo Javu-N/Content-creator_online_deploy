@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   NavigationMenu,
@@ -7,82 +7,82 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/navigation-menu';
+import { Link, usePathname, useRouter } from '@/i18n/routing';
+import { Input } from '@/components/ui/input';
 import {
   MoonIcon,
   SearchIcon,
   SquarePen,
   SquarePlus,
   SunIcon,
-} from "lucide-react";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-import ProfileMenu from "./ProfileMenu";
-import NotificationMenu from "./NotificationMenu";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+} from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
+import ProfileMenu from './ProfileMenu';
+import NotificationMenu from './NotificationMenu';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
 const components: { title: string }[] = [
   {
-    title: "Romance",
+    title: 'Romance',
   },
   {
-    title: "Fantasy",
+    title: 'Fantasy',
   },
   {
-    title: "Historical Fiction",
+    title: 'Historical Fiction',
   },
   {
-    title: "Humor",
+    title: 'Humor',
   },
   {
-    title: "Science Fiction",
+    title: 'Science Fiction',
   },
   {
-    title: "Non-Fiction",
+    title: 'Non-Fiction',
   },
   {
-    title: "Mystery",
+    title: 'Mystery',
   },
   {
-    title: "Thriller",
+    title: 'Thriller',
   },
   {
-    title: "Horror",
+    title: 'Horror',
   },
   {
-    title: "Adventure",
+    title: 'Adventure',
   },
   {
-    title: "Dystopian",
+    title: 'Dystopian',
   },
   {
-    title: "Drama",
+    title: 'Drama',
   },
   {
-    title: "Young Adult",
+    title: 'Young Adult',
   },
   {
     title: "Children's Fiction",
   },
   {
-    title: "Magical Realism",
+    title: 'Magical Realism',
   },
   {
-    title: "Steampunk",
+    title: 'Steampunk',
   },
   {
-    title: "Cyberpunk",
+    title: 'Cyberpunk',
   },
   {
-    title: "Gothic Fiction",
+    title: 'Gothic Fiction',
   },
   {
-    title: "Psychological Fiction",
+    title: 'Psychological Fiction',
   },
   {
-    title: "Literary Fiction",
+    title: 'Literary Fiction',
   },
 ];
 
@@ -94,10 +94,10 @@ export const AuthorizedHeader = () => {
   const pathname = usePathname();
 
   const handleThemeChange = () => {
-    if (theme === "dark") {
-      setTheme("light");
+    if (theme === 'dark') {
+      setTheme('light');
     } else {
-      setTheme("dark");
+      setTheme('dark');
     }
   };
 
@@ -106,7 +106,7 @@ export const AuthorizedHeader = () => {
   }, []);
 
   return (
-    <header className="fixed w-full bg-card z-50">
+    <header className="fixed w-full bg-card z-10">
       <nav className="relative">
         <div className="flex justify-between items-center py-3 px-2 lg:px-5">
           <div className="flex">
@@ -180,7 +180,7 @@ export const AuthorizedHeader = () => {
                 onClick={handleThemeChange}
                 className="hover:cursor-pointer hover:opacity-80"
               >
-                {theme === "dark" ? (
+                {theme === 'dark' ? (
                   <MoonIcon className="text-yellow-300" />
                 ) : (
                   <SunIcon className="text-red-500" />
