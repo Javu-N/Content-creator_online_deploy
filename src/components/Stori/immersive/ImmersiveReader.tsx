@@ -229,13 +229,15 @@ const ImmersiveReader = ({ story_id }: ImmersiveReaderProps) => {
               <h2 className="text-2xl md:text-4xl font-bold mb-3">
                 {story.chapters[currentChapter].chapterTitle}
               </h2>
-              <Image
-                src={story.chapters[currentChapter].chapterImageUri}
-                alt="chapterImg"
-                width={400}
-                height={350}
-                className="w-[100vw] sm:w-[400px] mb-6 rounded-md"
-              />
+              {story.chapters[currentChapter].chapterImageUri && (
+                <Image
+                  src={story.chapters[currentChapter].chapterImageUri}
+                  alt="chapterImg"
+                  width={400}
+                  height={350}
+                  className="w-[100vw] sm:w-[400px] mb-6 rounded-md"
+                />
+              )}
               <div className="whitespace-pre-line leading-relaxed">
                 {story.chapters[currentChapter].chapterContent}
               </div>
